@@ -60,7 +60,56 @@ public class MiRobot extends Agent{
         public int AEstrella(){
             int result = 0;
 
+        
+        //listaInterior = vacio
+        ArrayList listaInterior = new ArrayList();
+        //listaFrontera = inicio
+        ArrayList listaFrontera = new ArrayList();
+        // inicializar listaFrontera
+            
+        //mientras listaFrontera no esté vacía
+        while ( !listaFrontera.isEmpty() )
+        {
+            int n = 0;
+            //n = obtener nodo de listaFrontera con menor f(n) = g(n) + h(n)
+            
+            //listaFrontera.del(n)
+            listaFrontera.remove(n);
+            //listaInterior.add(n)
+            listaInterior.add(n);
 
+            //si listaFrontera = vacía
+            if ( listaFrontera.isEmpty() )
+            {
+                //Error, no se encuentra solución
+                System.out.println("Error, no se encuentra la solución");
+            }
+            //sino si n es meta
+            else if ( n == destino )
+            {
+                //devolver
+                //reconstruir camino desde la meta al inicio siguiendo los punteros
+                return 0;
+            }//fsi
+            
+            //para cada hijo m de n
+                    //g’(m) = n·g + c(n, m)  //g del nodo a explorar m
+
+                //si m no está en listaFrontera
+                    //almacenar la f, g y h del nodo en (m.f, m.g, m.h)
+                    //m.padre = n
+                    //listaFrontera.add(m)
+                //sino  si  g’(m)  es  mejor  que  m.g    //Verificamos  si  el 
+                    //nuevo camino es mejor
+                    //m.padre = n
+                    //recalcular f y g del nodo m
+                //fsi
+
+            //fpara
+
+       
+        } //fmientras
+        
             return result;
         }
 
