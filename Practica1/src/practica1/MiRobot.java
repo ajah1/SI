@@ -17,8 +17,9 @@ import javax.vecmath.Matrix3d;
  *
  * @author mireia
  */
-public class MiRobot extends Agent{
 
+public class MiRobot extends Agent{
+    
         //Variables utilizadas para el controlador difuso
         RangeSensorBelt sonars;
         FuzzyController controller;
@@ -31,13 +32,13 @@ public class MiRobot extends Agent{
         int expandidos[][]; //Orden de los nodos expandidos. Será el resultado del A*
         int tamaño; //Tamaño del mundo
 
+        
 
         public MiRobot(Vector3d position, String name, Practica1 practica1) {
             super(position, name);
 
             //Prepara las variables
             tamaño = practica1.tamaño_mundo;
-
             mundo = new int[tamaño][tamaño];
             camino = new char[tamaño][tamaño];
             expandidos = new int[tamaño][tamaño];
@@ -56,40 +57,70 @@ public class MiRobot extends Agent{
             sonars = RobotFactory.addSonarBeltSensor(this); // de 0 a 1.5m
         }
 
-        //Calcula el A*
-        public int AEstrella(){
-            int result = 0;
-
         
+        // nodo frontera con menor f(n)
+        public Nodo menorFrontera(ArrayList _lista)
+        {
+            Nodo menorNodo = new Nodo();
+            
+            return menorNodo;
+        }
+        
+        // Obtener los nodos frontera
+        public void obtenerFrontera(ArrayList _lf, Nodo _n)
+        {
+            char caracter = '.';
+            
+            for (int i = 0; i < 4; ++i)
+            {
+                if ( mundo[_n.f - 1][_n.c] == caracter)
+                {}
+                if ( mundo[_n.f + 1][_n.c] == caracter)
+                {}
+                if ( mundo[_n.f][_n.c + 1] == caracter)
+                {}
+                if ( mundo[_n.f - 1][_n.c - 1] == caracter)
+                {}     
+            }
+        }
+        
+        //Calcula el A*
+        public int AEstrella()
+        {        
+            int result = 0;
+    
+            Nodo nodometa = new Nodo( destino, tamaño - 1 );
+            Nodo tempnodo = new Nodo(origen,1);
+            
         //listaInterior = vacio
-        ArrayList listaInterior = new ArrayList();
+            ArrayList listaInterior = new ArrayList(1);
+            listaInterior.add( tempnodo );
         //listaFrontera = inicio
-        ArrayList listaFrontera = new ArrayList();
+            ArrayList listaFrontera = new ArrayList();
         // inicializar listaFrontera
+            this.obtenerFrontera ( listaFrontera, (Nodo)listaFrontera.get(0) );
             
         //mientras listaFrontera no esté vacía
-        while ( !listaFrontera.isEmpty() )
-        {
-            int n = 0;
+            while ( !listaFrontera.isEmpty() )
+            {
             //n = obtener nodo de listaFrontera con menor f(n) = g(n) + h(n)
-            
+                tempnodo = this.menorFrontera( listaFrontera );
             //listaFrontera.del(n)
-            listaFrontera.remove(n);
+                listaFrontera.remove( tempnodo );
             //listaInterior.add(n)
-            listaInterior.add(n);
-
+                listaInterior.add( tempnodo );
+                
             //si listaFrontera = vacía
-            if ( listaFrontera.isEmpty() )
-            {
-                //Error, no se encuentra solución
-                System.out.println("Error, no se encuentra la solución");
-            }
+                if ( listaFrontera.isEmpty() )
+                     //Error, no se encuentra solución
+                    return 1;
+  
             //sino si n es meta
-            else if ( n == destino )
-            {
+                else if ( nodometa.equals(tempnodo) )
                 //devolver
                 //reconstruir camino desde la meta al inicio siguiendo los punteros
-                return 0;
+                    return 0;
+                
             }//fsi
             
             //para cada hijo m de n
@@ -108,7 +139,7 @@ public class MiRobot extends Agent{
             //fpara
 
        
-        } //fmientras
+         //fmientras
         
             return result;
         }
