@@ -33,8 +33,8 @@ public class Nodo {
     {
         if ( (f == _nodo.f) && (c == _nodo.c) )
             return true;
-        else
-            return false;
+     
+        return false;
     }
     
 }

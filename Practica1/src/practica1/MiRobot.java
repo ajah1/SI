@@ -66,22 +66,35 @@ public class MiRobot extends Agent{
             return menorNodo;
         }
         
-        // Obtener los nodos frontera
-        public void obtenerFrontera(ArrayList _lf, Nodo _n)
-        {
-            char caracter = '.';
-            
-            for (int i = 0; i < 4; ++i)
+        // busca el _nodo en la lista interior
+        public boolean esInterior(Nodo _n, ArrayList _li)
+        {   
+            for ( Object nodo : _li)
             {
-                if ( mundo[_n.f - 1][_n.c] == caracter)
-                {}
-                if ( mundo[_n.f + 1][_n.c] == caracter)
-                {}
-                if ( mundo[_n.f][_n.c + 1] == caracter)
-                {}
-                if ( mundo[_n.f - 1][_n.c - 1] == caracter)
-                {}     
+                Nodo n = (Nodo)nodo;
+                
+                if ( n.equals(_n))
+                    return true;
             }
+            return false;
+        }
+        
+        // Obtener los nodos frontera
+        public void obtenerFrontera(ArrayList _lf, Nodo _n, ArrayList _li)
+        {   
+            // comprobar que no están en interior y añadirlos
+            if ( mundo[_n.f - 1][_n.c] == '.' 
+                    && !esInterior(_n, _li))
+                _lf.add(_n);
+            else if ( mundo[_n.f + 1][_n.c] == '.'
+                    && !esInterior(_n, _li))
+                _lf.add(_n);
+            else if ( mundo[_n.f][_n.c + 1] == '.'
+                    && !esInterior(_n, _li))
+                _lf.add(_n);
+            else if ( mundo[_n.f - 1][_n.c - 1] == '.'
+                    && !esInterior(_n, _li))
+                _lf.add(_n);
         }
         
         //Calcula el A*
@@ -93,12 +106,12 @@ public class MiRobot extends Agent{
             Nodo tempnodo = new Nodo(origen,1);
             
         //listaInterior = vacio
-            ArrayList listaInterior = new ArrayList(1);
+            ArrayList listaInterior = new ArrayList();
             listaInterior.add( tempnodo );
         //listaFrontera = inicio
             ArrayList listaFrontera = new ArrayList();
         // inicializar listaFrontera
-            this.obtenerFrontera ( listaFrontera, (Nodo)listaFrontera.get(0) );
+            this.obtenerFrontera ( listaFrontera, (Nodo)listaFrontera.get(0), listaInterior );
             
         //mientras listaFrontera no esté vacía
             while ( !listaFrontera.isEmpty() )
@@ -116,7 +129,7 @@ public class MiRobot extends Agent{
                     return 1;
   
             //sino si n es meta
-                else if ( nodometa.equals(tempnodo) )
+                else if ( nodometa.equals( tempnodo ) )
                 //devolver
                 //reconstruir camino desde la meta al inicio siguiendo los punteros
                     return 0;
@@ -135,7 +148,7 @@ public class MiRobot extends Agent{
                     //m.padre = n
                     //recalcular f y g del nodo m
                 //fsi
-
+                
             //fpara
 
        

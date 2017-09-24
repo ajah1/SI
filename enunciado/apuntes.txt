@@ -1,6 +1,6 @@
-g => coste moverse a la adyacente
+=> coste moverse a la adyacente
 
 
-h => estimaciÛn por destino
+h => estimaci√≥n por destino
 	- por ejemplo la distancia euclidea, manjatan.. (optimista)
 
