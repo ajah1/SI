@@ -9,7 +9,8 @@ package practica1;
  *
  * @author alihyder
  */
-public class Nodo {
+public class Nodo 
+{
     int f;
     int c;
     float h;

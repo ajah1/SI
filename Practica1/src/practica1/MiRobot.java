@@ -73,7 +73,7 @@ public class MiRobot extends Agent{
             {
                 Nodo n = (Nodo)nodo;
                 
-                if ( n.equals(_n))
+                if ( n.equals(_n) )
                     return true;
             }
             return false;
@@ -137,14 +137,14 @@ public class MiRobot extends Agent{
             }//fsi
             
             //para cada hijo m de n
-                    //g’(m) = n·g + c(n, m)  //g del nodo a explorar m
+            
+                //g’(m) = n·g + c(n, m)  //g del nodo a explorar m
 
                 //si m no está en listaFrontera
                     //almacenar la f, g y h del nodo en (m.f, m.g, m.h)
                     //m.padre = n
                     //listaFrontera.add(m)
-                //sino  si  g’(m)  es  mejor  que  m.g    //Verificamos  si  el 
-                    //nuevo camino es mejor
+                //sino  si  g’(m)  es  mejor  que  m.g //Verificamos  si  el nuevo camino es mejor
                     //m.padre = n
                     //recalcular f y g del nodo m
                 //fsi
