@@ -59,9 +59,23 @@ public class MiRobot extends Agent{
 
         
         // nodo frontera con menor f(n)
-        public Nodo menorFrontera(ArrayList _lista)
+        public Nodo menorFrontera(ArrayList _lf)
         {
             Nodo menorNodo = new Nodo();
+            float fm = calcularf ( _lf.get(0) );
+            float f = 0.0f;
+            
+            for ( Object nodo : _lf )
+            {
+                Nodo n = new Nodo();
+                
+                n = (Nodo)nodo;
+                
+                f = calcularf ( n );
+                
+                if ( f < fm )
+                    fm = f;
+            }
             
             return menorNodo;
         }
@@ -133,26 +147,28 @@ public class MiRobot extends Agent{
                 //devolver
                 //reconstruir camino desde la meta al inicio siguiendo los punteros
                     return 0;
-                
-            }//fsi
+            //fsi
             
-            //para cada hijo m de n
-            
-                //g’(m) = n·g + c(n, m)  //g del nodo a explorar m
-
-                //si m no está en listaFrontera
-                    //almacenar la f, g y h del nodo en (m.f, m.g, m.h)
-                    //m.padre = n
-                    //listaFrontera.add(m)
-                //sino  si  g’(m)  es  mejor  que  m.g //Verificamos  si  el nuevo camino es mejor
-                    //m.padre = n
-                    //recalcular f y g del nodo m
-                //fsi
+                ArrayList hijosn = new ArrayList();
+                this.obtenerhijosn ( n, hijosn );
                 
-            //fpara
+                //para cada hijo m de n
+                while ( !n.isEmpty() )
+                {
+                    //g’(m) = n·g + c(n, m)  //g del nodo a explorar m
 
-       
-         //fmientras
+                    //si m no está en listaFrontera
+                        //almacenar la f, g y h del nodo en (m.f, m.g, m.h)
+                        //m.padre = n
+                        //listaFrontera.add(m)
+                    //sino  si  g’(m)  es  mejor  que  m.g //Verificamos  si  el nuevo camino es mejor
+                        //m.padre = n
+                        //recalcular f y g del nodo m
+                    //fsi
+                    
+                }//fpara
+            } //fmientras
+         
         
             return result;
         }
