@@ -77,7 +77,10 @@ public class MiRobot extends Agent{
                 f = n.g + calcularh ( n, _nd );
                 
                 if ( f < fm )
+                {
                     fm = f;
+                    menorNodo = n;
+                }
             }
             
             return menorNodo;
