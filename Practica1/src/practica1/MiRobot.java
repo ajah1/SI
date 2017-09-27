@@ -237,6 +237,8 @@ public class MiRobot extends Agent{
                         //m.padre = n
                         m.padre = n;
                         //recalcular f y g del nodo m
+                        m.g = ;
+                        m.f = m.g + 
                     }//fsi
                     
                 }//fpara
