@@ -1,4 +1,4 @@
-=> coste moverse a la adyacente
+c => coste moverse a la adyacente
 
 
 h => estimación por destino

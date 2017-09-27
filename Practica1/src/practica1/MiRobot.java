@@ -56,22 +56,25 @@ public class MiRobot extends Agent{
             // Añade sonars
             sonars = RobotFactory.addSonarBeltSensor(this); // de 0 a 1.5m
         }
-
+        
+        public float calcularh ( Nodo _no, Nodo _nd )
+        {
+            return (float)Math.sqrt( (_no.f + _no.c)^2 + (_nd.f + _nd.c)^2 );
+        }
         
         // nodo frontera con menor f(n)
-        public Nodo menorFrontera(ArrayList _lf)
+        public Nodo menorFrontera ( ArrayList _lf, Nodo _nd )
         {
-            Nodo menorNodo = new Nodo();
-            float fm = calcularf ( _lf.get(0) );
+            Nodo menorNodo = (Nodo)_lf.get(0);
+            
+            float fm = menorNodo.g + calcularh ( menorNodo, _nd );
             float f = 0.0f;
             
             for ( Object nodo : _lf )
             {
-                Nodo n = new Nodo();
+                Nodo n = (Nodo)nodo;
                 
-                n = (Nodo)nodo;
-                
-                f = calcularf ( n );
+                f = n.g + calcularh ( n, _nd );
                 
                 if ( f < fm )
                     fm = f;
@@ -81,7 +84,7 @@ public class MiRobot extends Agent{
         }
         
         // busca el _nodo en la lista interior
-        public boolean esInterior(Nodo _n, ArrayList _li)
+        public boolean esInterior( Nodo _n, ArrayList _li )
         {   
             for ( Object nodo : _li)
             {
@@ -93,31 +96,81 @@ public class MiRobot extends Agent{
             return false;
         }
         
+        public void hijosn ( Nodo _n, ArrayList _lf ) 
+        {
+            if ( mundo[_n.f - 1][_n.c] == '.' )
+               {
+                   _lf.add(_n);
+               }
+               if ( mundo[_n.f + 1][_n.c] == '.')
+               {
+                   _lf.add(_n);
+               }
+               if ( mundo[_n.f][_n.c + 1] == '.')
+               {
+                   _lf.add(_n);
+               }
+               if ( mundo[_n.f - 1][_n.c - 1] == '.')
+               {
+                   _lf.add(_n);
+               }
+        }
+        
         // Obtener los nodos frontera
-        public void obtenerFrontera(ArrayList _lf, Nodo _n, ArrayList _li)
+        public void obtenerFrontera( int _g, ArrayList _lf, Nodo _n, ArrayList _li )
         {   
-            // comprobar que no están en interior y añadirlos
+            Nodo naux;
+            
             if ( mundo[_n.f - 1][_n.c] == '.' 
                     && !esInterior(_n, _li))
+            {
+                naux = new Nodo(_n.f-1, _n.c, _n.g + 1);
                 _lf.add(_n);
-            else if ( mundo[_n.f + 1][_n.c] == '.'
+            }
+            if ( mundo[_n.f + 1][_n.c] == '.'
                     && !esInterior(_n, _li))
+            {
+                naux = new Nodo(_n.f+1, _n.c, _n.g + 1);
                 _lf.add(_n);
-            else if ( mundo[_n.f][_n.c + 1] == '.'
+            }
+            if ( mundo[_n.f][_n.c + 1] == '.'
                     && !esInterior(_n, _li))
+            {
+                naux = new Nodo(_n.f, _n.c+1, _n.g + 1);
                 _lf.add(_n);
-            else if ( mundo[_n.f - 1][_n.c - 1] == '.'
+            }
+            if ( mundo[_n.f - 1][_n.c - 1] == '.'
                     && !esInterior(_n, _li))
+            {
+                naux = new Nodo(_n.f, _n.c-1, _n.g + 1);
                 _lf.add(_n);
+            }
+        }
+        
+        public boolean esfrontera ( ArrayList _lf, Nodo _n )
+        {
+            for ( Object nodo : _lf )
+            {
+                Nodo n = (Nodo)nodo;
+                
+                if ( _n.equals(_n) )
+                    return true;
+            }
+            
+            return false;
         }
         
         //Calcula el A*
         public int AEstrella()
         {        
             int result = 0;
-    
+   
             Nodo nodometa = new Nodo( destino, tamaño - 1 );
-            Nodo tempnodo = new Nodo(origen,1);
+            
+            Nodo tempnodo = new Nodo( origen, 1 );
+            tempnodo.g = 0;
+            
+            Nodo n = new Nodo();
             
         //listaInterior = vacio
             ArrayList listaInterior = new ArrayList();
@@ -125,17 +178,21 @@ public class MiRobot extends Agent{
         //listaFrontera = inicio
             ArrayList listaFrontera = new ArrayList();
         // inicializar listaFrontera
-            this.obtenerFrontera ( listaFrontera, (Nodo)listaFrontera.get(0), listaInterior );
+            this.obtenerFrontera ( 
+                    tempnodo.g,
+                    listaFrontera, 
+                    (Nodo)listaFrontera.get(0), 
+                    listaInterior );
             
         //mientras listaFrontera no esté vacía
             while ( !listaFrontera.isEmpty() )
             {
             //n = obtener nodo de listaFrontera con menor f(n) = g(n) + h(n)
-                tempnodo = this.menorFrontera( listaFrontera );
+                n = this.menorFrontera( listaFrontera, nodometa );
             //listaFrontera.del(n)
-                listaFrontera.remove( tempnodo );
+                listaFrontera.remove( n );
             //listaInterior.add(n)
-                listaInterior.add( tempnodo );
+                listaInterior.add( n );
                 
             //si listaFrontera = vacía
                 if ( listaFrontera.isEmpty() )
@@ -143,28 +200,41 @@ public class MiRobot extends Agent{
                     return 1;
   
             //sino si n es meta
-                else if ( nodometa.equals( tempnodo ) )
+                else if ( nodometa.equals( nodometa ) )
                 //devolver
                 //reconstruir camino desde la meta al inicio siguiendo los punteros
                     return 0;
             //fsi
             
                 ArrayList hijosn = new ArrayList();
-                this.obtenerhijosn ( n, hijosn );
+                this.hijosn ( n, hijosn );
                 
                 //para cada hijo m de n
-                while ( !n.isEmpty() )
+                for ( Object nodo : hijosn )
                 {
-                    //g’(m) = n·g + c(n, m)  //g del nodo a explorar m
-
+                    Nodo m = (Nodo)nodo;
+                    
+                    //g’(m) = n.g + c(n, m)
+                    m.g = n.g + 1;
+                    
                     //si m no está en listaFrontera
+                    if ( !this.esfrontera( listaFrontera, (Nodo)nodo ) )
+                    {
                         //almacenar la f, g y h del nodo en (m.f, m.g, m.h)
+                        m.h = calcularh ( m, nodometa );
+                        m.fn = m.g + m.h;
                         //m.padre = n
+                        m.padre = n;
                         //listaFrontera.add(m)
+                        listaFrontera.add ( m );
+                    }        
                     //sino  si  g’(m)  es  mejor  que  m.g //Verificamos  si  el nuevo camino es mejor
+                    else if ()
+                    {
                         //m.padre = n
+                        m.padre = n;
                         //recalcular f y g del nodo m
-                    //fsi
+                    }//fsi
                     
                 }//fpara
             } //fmientras

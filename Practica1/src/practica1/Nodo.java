@@ -13,15 +13,20 @@ public class Nodo
 {
     int f;
     int c;
+    
+    float fn;
     float h;
-    float g;
+    int g;
+  
+    Nodo padre;
     
     public Nodo()
-    {
+    {   
         this.f = 0;
         this.c = 0;
-        h = 0.0f;
-        g = 0.0f;
+        
+        this.h = 0.0f;
+        this.g = 0;
     }
     
     public Nodo(int _f, int _c)
@@ -29,6 +34,14 @@ public class Nodo
         this.f = _f;
         this.c = _c;
     }
+    
+        public Nodo(int _f, int _c, int _g)
+    {
+        this.f = _f;
+        this.c = _c;
+        this.g = _g;
+    }
+    
     
     public boolean equals(Nodo _nodo)
     {
