@@ -13,8 +13,8 @@ public class Nodo
 {
     int f;
     int c;
+    int expandido;
     
-    float fn;
     float h;
     int g;
   
@@ -27,6 +27,8 @@ public class Nodo
         
         this.h = 0.0f;
         this.g = 0;
+        
+        this.expandido = 0;
     }
     
     public Nodo(int _f, int _c)

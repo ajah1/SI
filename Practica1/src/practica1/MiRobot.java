@@ -57,6 +57,7 @@ public class MiRobot extends Agent{
             sonars = RobotFactory.addSonarBeltSensor(this); // de 0 a 1.5m
         }
         
+        // calcular heurística
         public float calcularh ( Nodo _no, Nodo _nd )
         {
             return (float)Math.sqrt( (_no.f + _no.c)^2 + (_nd.f + _nd.c)^2 );
@@ -86,41 +87,8 @@ public class MiRobot extends Agent{
             return menorNodo;
         }
         
-        // busca el _nodo en la lista interior
-        public boolean esInterior( Nodo _n, ArrayList _li )
-        {   
-            for ( Object nodo : _li)
-            {
-                Nodo n = (Nodo)nodo;
-                
-                if ( n.equals(_n) )
-                    return true;
-            }
-            return false;
-        }
-        
-        public void hijosn ( Nodo _n, ArrayList _lf ) 
-        {
-            if ( mundo[_n.f - 1][_n.c] == '.' )
-               {
-                   _lf.add(_n);
-               }
-               if ( mundo[_n.f + 1][_n.c] == '.')
-               {
-                   _lf.add(_n);
-               }
-               if ( mundo[_n.f][_n.c + 1] == '.')
-               {
-                   _lf.add(_n);
-               }
-               if ( mundo[_n.f - 1][_n.c - 1] == '.')
-               {
-                   _lf.add(_n);
-               }
-        }
-        
-        // Obtener los nodos frontera
-        public void obtenerFrontera( int _g, ArrayList _lf, Nodo _n, ArrayList _li )
+        // Obtener los nodos hijos que no estén en lista interior
+        public void obtenerHijos( ArrayList _lf, Nodo _n, ArrayList _li )
         {   
             Nodo naux;
             
@@ -150,6 +118,20 @@ public class MiRobot extends Agent{
             }
         }
         
+        // busca el _nodo en la lista interior
+        public boolean esInterior( Nodo _n, ArrayList _li )
+        {   
+            for ( Object nodo : _li)
+            {
+                Nodo n = (Nodo)nodo;
+                
+                if ( n.equals(_n) )
+                    return true;
+            }
+            return false;
+        }
+        
+        // busca el _nodo en lista frontera
         public boolean esfrontera ( ArrayList _lf, Nodo _n )
         {
             for ( Object nodo : _lf )
@@ -166,12 +148,20 @@ public class MiRobot extends Agent{
         //Calcula el A*
         public int AEstrella()
         {        
+            /*
+                HAcer contador par+a saber el orden en el que 
+                expandes los nodos            
+            */
+            
+            int expandido = 0;
             int result = 0;
    
             Nodo nodometa = new Nodo( destino, tamaño - 1 );
             
             Nodo tempnodo = new Nodo( origen, 1 );
+            tempnodo.expandido = expandido;
             tempnodo.g = 0;
+            expandido++;
             
             Nodo n = new Nodo();
             
@@ -181,10 +171,9 @@ public class MiRobot extends Agent{
         //listaFrontera = inicio
             ArrayList listaFrontera = new ArrayList();
         // inicializar listaFrontera
-            this.obtenerFrontera ( 
-                    tempnodo.g,
+            this.obtenerHijos ( 
                     listaFrontera, 
-                    (Nodo)listaFrontera.get(0), 
+                    (Nodo)listaInterior.get(0), 
                     listaInterior );
             
         //mientras listaFrontera no esté vacía
@@ -194,6 +183,7 @@ public class MiRobot extends Agent{
                 n = this.menorFrontera( listaFrontera, nodometa );
             //listaFrontera.del(n)
                 listaFrontera.remove( n );
+                n.expandido = expandido;
             //listaInterior.add(n)
                 listaInterior.add( n );
                 
@@ -210,9 +200,10 @@ public class MiRobot extends Agent{
             //fsi
             
                 ArrayList hijosn = new ArrayList();
-                this.hijosn ( n, hijosn );
+                // ( int _g, ArrayList _lf, Nodo _n, ArrayList _li )
+                this.obtenerHijos(hijosn, n, listaInterior);
                 
-                //para cada hijo m de n
+                //para cada hijo m de n que no esté en lista interior
                 for ( Object nodo : hijosn )
                 {
                     Nodo m = (Nodo)nodo;
@@ -225,20 +216,19 @@ public class MiRobot extends Agent{
                     {
                         //almacenar la f, g y h del nodo en (m.f, m.g, m.h)
                         m.h = calcularh ( m, nodometa );
-                        m.fn = m.g + m.h;
                         //m.padre = n
                         m.padre = n;
                         //listaFrontera.add(m)
                         listaFrontera.add ( m );
                     }        
                     //sino  si  g’(m)  es  mejor  que  m.g //Verificamos  si  el nuevo camino es mejor
-                    else if ()
+                    // comprar g del padre antiguo con el nuevo
+                    else if ( m.padre.g > n.g )
                     {
                         //m.padre = n
                         m.padre = n;
                         //recalcular f y g del nodo m
-                        m.g = ;
-                        m.f = m.g + 
+                        m.g = m.padre.g + 1;
                     }//fsi
                     
                 }//fpara
