@@ -5,6 +5,7 @@
 
 package practica1;
 
+import java.util.ArrayList;
 import javax.vecmath.Vector3d;
 
 /**
@@ -42,8 +43,32 @@ public class Main {
         
        //Vector3d position, String name, Practica1 practica1
        MiRobot r = new MiRobot( v, "hola", p1);
+       /*
+        for (int i = 0; i < 20; ++i )
+            {
+                for (int j = 0; j < 20; ++j)
+                {
+                    System.out.print((int)r.mundo[i][j]);
+                }
+                System.out.println();
+            }
+        
+       */
        
-       System.out.println("RESULTADO: " + r.AEstrella());
+       
+      // System.out.println("RESULTADO: " + r.AEstrella());
+       
+       Nodo n = new Nodo(3, 2);
+       
+       ArrayList lf = new ArrayList();
+       
+       ArrayList li = new ArrayList();
+       li.add(n);
+       
+      
+       
+       r.obtenerHijos(lf, n, li);
+       
     }
 
 }

@@ -92,29 +92,29 @@ public class MiRobot extends Agent{
         {   
             Nodo naux;
             
-            if ( mundo[_n.f - 1][_n.c] == '.' 
-                    && !esInterior(_n, _li))
+            if ( mundo[_n.f - 1][_n.c] == 0 
+                    && !esInterior(new Nodo(_n.f - 1, _n.c), _li) )
             {
                 naux = new Nodo(_n.f-1, _n.c, _n.g + 1);
-                _lf.add(_n);
+                _lf.add(naux);
             }
-            if ( mundo[_n.f + 1][_n.c] == '.'
-                    && !esInterior(_n, _li))
+            if ( mundo[_n.f + 1][_n.c] == 0
+                    && !esInterior(new Nodo(_n.f + 1, _n.c), _li))
             {
                 naux = new Nodo(_n.f+1, _n.c, _n.g + 1);
-                _lf.add(_n);
+                _lf.add(naux);
             }
-            if ( mundo[_n.f][_n.c + 1] == '.'
-                    && !esInterior(_n, _li))
+            if ( mundo[_n.f][_n.c + 1] == 0
+                    && !esInterior(new Nodo(_n.f, _n.c + 1), _li))
             {
                 naux = new Nodo(_n.f, _n.c+1, _n.g + 1);
-                _lf.add(_n);
+                _lf.add(naux);
             }
-            if ( mundo[_n.f - 1][_n.c - 1] == '.'
-                    && !esInterior(_n, _li))
+            if ( mundo[_n.f - 1][_n.c - 1] == 0
+                    && !esInterior(new Nodo(_n.f , _n.c - 1), _li))
             {
                 naux = new Nodo(_n.f, _n.c-1, _n.g + 1);
-                _lf.add(_n);
+                _lf.add(naux);
             }
         }
         
@@ -125,7 +125,7 @@ public class MiRobot extends Agent{
             {
                 Nodo n = (Nodo)nodo;
                 
-                if ( n.equals(_n) )
+                if ( _n.equals(n) )
                     return true;
             }
             return false;
@@ -145,6 +145,19 @@ public class MiRobot extends Agent{
             return false;
         }
         
+        // genera el camino obtenido
+        public void camino(Nodo _last)
+        {
+            for (int i = 0; i < 20; ++i )
+            {
+                for (int j = 0; j < 20; ++j)
+                {
+                    camino[i][j] = '.';
+                }
+                System.out.println();
+            }
+        }
+        
         //Calcula el A*
         public int AEstrella()
         {        
@@ -154,7 +167,7 @@ public class MiRobot extends Agent{
             */
             
             int expandido = 0;
-            int result = 0;
+            int result = 1;
    
             Nodo nodometa = new Nodo( destino, tamaño - 1 );
             
@@ -218,6 +231,7 @@ public class MiRobot extends Agent{
                         m.h = calcularh ( m, nodometa );
                         //m.padre = n
                         m.padre = n;
+                        
                         //listaFrontera.add(m)
                         listaFrontera.add ( m );
                     }        
@@ -234,7 +248,8 @@ public class MiRobot extends Agent{
                 }//fpara
             } //fmientras
          
-        
+            this.camino(n);
+            
             return result;
         }
 
