@@ -61,14 +61,16 @@ public class MiRobot extends Agent{
         public float calcularh ( Nodo _no, Nodo _nd )
         {
             return (float)Math.sqrt( (_no.f + _no.c)^2 + (_nd.f + _nd.c)^2 );
+            
+            //return ( _no.f - _nd.f ) + ( _no.c - _nd.c);
         }
         
         // nodo frontera con menor f(n)
         public Nodo menorFrontera ( ArrayList _lf, Nodo _nd )
         {
             Nodo menorNodo = (Nodo)_lf.get(0);
-            
             float fm = menorNodo.g + calcularh ( menorNodo, _nd );
+            
             float f = 0.0f;
             
             for ( Object nodo : _lf )
@@ -87,7 +89,7 @@ public class MiRobot extends Agent{
             return menorNodo;
         }
         
-        // Obtener los nodos hijos que no estén en lista interior
+        // Obtener los nodos hijos que no estén en lista interior [ok]
         public void obtenerHijos( ArrayList _lf, Nodo _n, ArrayList _li )
         {   
             Nodo naux;
@@ -110,7 +112,7 @@ public class MiRobot extends Agent{
                 naux = new Nodo(_n.f, _n.c+1, _n.g + 1);
                 _lf.add(naux);
             }
-            if ( mundo[_n.f - 1][_n.c - 1] == 0
+            if ( mundo[_n.f][_n.c - 1] == 0
                     && !esInterior(new Nodo(_n.f , _n.c - 1), _li))
             {
                 naux = new Nodo(_n.f, _n.c-1, _n.g + 1);
@@ -138,7 +140,7 @@ public class MiRobot extends Agent{
             {
                 Nodo n = (Nodo)nodo;
                 
-                if ( _n.equals(_n) )
+                if ( _n.equals(n) )
                     return true;
             }
             
@@ -148,13 +150,35 @@ public class MiRobot extends Agent{
         // genera el camino obtenido
         public void camino(Nodo _last)
         {
+            Nodo aux = _last;
+            
             for (int i = 0; i < 20; ++i )
             {
                 for (int j = 0; j < 20; ++j)
                 {
                     camino[i][j] = '.';
                 }
-                System.out.println();
+                System.out.println("MATRIZ camino inicializada");
+            }
+            
+            System.out.println("RELLENANDO con x");
+            
+            aux = _last;
+            
+            while ( aux != null )
+            {
+                camino[aux.f][aux.c] = 'x';
+                aux = aux.padre;
+            }
+            
+            System.out.println("TERMINAR de rellenar x");
+        
+         for (int i = 0; i < 20; ++i )
+            {
+                for (int j = 0; j < 20; ++j)
+                {
+                    System.out.println(camino[i][j]);
+                }
             }
         }
         
@@ -174,6 +198,7 @@ public class MiRobot extends Agent{
             Nodo tempnodo = new Nodo( origen, 1 );
             tempnodo.expandido = expandido;
             tempnodo.g = 0;
+            
             expandido++;
             
             Nodo n = new Nodo();
@@ -206,14 +231,13 @@ public class MiRobot extends Agent{
                     return 1;
   
             //sino si n es meta
-                else if ( nodometa.equals( nodometa ) )
+                else if ( nodometa.equals( n ) )
                 //devolver
                 //reconstruir camino desde la meta al inicio siguiendo los punteros
                     return 0;
             //fsi
             
                 ArrayList hijosn = new ArrayList();
-                // ( int _g, ArrayList _lf, Nodo _n, ArrayList _li )
                 this.obtenerHijos(hijosn, n, listaInterior);
                 
                 //para cada hijo m de n que no esté en lista interior
@@ -225,7 +249,7 @@ public class MiRobot extends Agent{
                     m.g = n.g + 1;
                     
                     //si m no está en listaFrontera
-                    if ( !this.esfrontera( listaFrontera, (Nodo)nodo ) )
+                    if ( !this.esfrontera( listaFrontera, (Nodo)m ) )
                     {
                         //almacenar la f, g y h del nodo en (m.f, m.g, m.h)
                         m.h = calcularh ( m, nodometa );
@@ -236,8 +260,8 @@ public class MiRobot extends Agent{
                         listaFrontera.add ( m );
                     }        
                     //sino  si  g’(m)  es  mejor  que  m.g //Verificamos  si  el nuevo camino es mejor
-                    // comprar g del padre antiguo con el nuevo
-                    else if ( m.padre.g > n.g )
+                    // comprarar g del padre antiguo con el nuevo
+                    else if ( m.padre.g < n.g )
                     {
                         //m.padre = n
                         m.padre = n;
