@@ -66,11 +66,11 @@ public class MiRobot extends Agent{
             float dx2 = 10 - _nd.f;
             float dy2 = 1 - _nd.c;
             
-            float cross = Math.abs(dx1*dy2 - dx2*dy1);
+            return Math.abs(dx1*dy2 - dx2*dy1);
             
             //return (float)(cross * 0.001);
             
-            return (_no.f - _nd.f) + (_no.c - _nd.c);
+            // return (_no.f - _nd.f) + (_no.c - _nd.c);
             //return Math.abs(_no.f - _nd.f) + Math.abs(_no.c - _nd.c);
         }
         
@@ -208,7 +208,7 @@ public class MiRobot extends Agent{
             */
             int expandido = 0;
    
-            Nodo nodometa = new Nodo( destino, tamaño - 1 );
+            Nodo nodometa = new Nodo( destino, tamaño - 2 );
             Nodo nodoorigen = new Nodo ( origen, 1, 0 );
             
             expandido++;
@@ -246,9 +246,12 @@ public class MiRobot extends Agent{
                 }
             //sino si n es meta
                 else if ( nodometa.equals( n ) )
+                {
                 //devolver
                 //reconstruir camino desde la meta al inicio siguiendo los punteros
+                    this.camino(n);
                     return 0;
+                }
             //fsi
             
                 ArrayList hijosn = new ArrayList();
@@ -279,7 +282,7 @@ public class MiRobot extends Agent{
                         listaFrontera.add ( m );
                     }        
                     //sino  si  g’(m)  es  mejor  que  m.g //Verificamos  si  el nuevo camino es mejor
-                    // comprarar g del padre antiguo con el nuevo
+                    // comprarar g del padre actual con n
                     else if ( n.g < m.padre.g )
                     {
                         //m.padre = n
