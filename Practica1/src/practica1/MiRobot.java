@@ -60,14 +60,18 @@ public class MiRobot extends Agent{
         // calcular heurística
         public float calcularh ( Nodo _no, Nodo _nd )
         {
-            float D = 1;
-            float D2 = 1;
+            float dx1 = _no.f - _nd.f;
+            float dy1 = _no.c - _nd.c;
             
-            float dx = Math.abs(_no.f - _nd.f );
-            float dy = Math.abs(_no.c - _nd.c);
+            float dx2 = 10 - _nd.f;
+            float dy2 = 1 - _nd.c;
             
-           return (dx + dy);
-            //return D * (dx + dy) + (D2 - 2 * D) * Math.min(dx, dy);
+            float cross = Math.abs(dx1*dy2 - dx2*dy1);
+            
+            //return (float)(cross * 0.001);
+            
+            return (_no.f - _nd.f) + (_no.c - _nd.c);
+            //return Math.abs(_no.f - _nd.f) + Math.abs(_no.c - _nd.c);
         }
         
         // nodo frontera con menor f(n)
@@ -98,11 +102,21 @@ public class MiRobot extends Agent{
         public void obtenerHijos( ArrayList _lf, Nodo _n, ArrayList _li )
         {   
             Nodo naux;
+            
             if ( mundo[_n.f][_n.c + 1] == 0
                     && !esInterior(new Nodo(_n.f, _n.c + 1), _li))
             {
                 naux = new Nodo(_n.f, _n.c+1, _n.g + 1);
                 naux.padre = _n;
+                naux.h = calcularh (naux, new Nodo(destino, tamaño-1));
+                _lf.add(naux);
+            }            
+            if ( mundo[_n.f][_n.c - 1] == 0
+                    && !esInterior(new Nodo(_n.f , _n.c - 1), _li))
+            {
+                naux = new Nodo(_n.f, _n.c-1, _n.g + 1);
+                naux.padre = _n;
+                 naux.h = calcularh (naux, new Nodo(destino, tamaño-1));
                 _lf.add(naux);
             }
             if ( mundo[_n.f - 1][_n.c] == 0 
@@ -110,21 +124,15 @@ public class MiRobot extends Agent{
             {
                 naux = new Nodo(_n.f-1, _n.c, _n.g + 1);
                 naux.padre = _n;
+                 naux.h = calcularh (naux, new Nodo(destino, tamaño-1));
                 _lf.add(naux);
             }
-            if ( mundo[_n.f][_n.c - 1] == 0
-                    && !esInterior(new Nodo(_n.f , _n.c - 1), _li))
-            {
-                naux = new Nodo(_n.f, _n.c-1, _n.g + 1);
-                naux.padre = _n;
-                _lf.add(naux);
-            }
-
             if ( mundo[_n.f + 1][_n.c] == 0
                     && !esInterior(new Nodo(_n.f + 1, _n.c), _li))
             {
                 naux = new Nodo(_n.f+1, _n.c, _n.g + 1);
                 naux.padre = _n;
+                 naux.h = calcularh (naux, new Nodo(destino, tamaño-1));
                 _lf.add(naux);
             }
         }
@@ -167,7 +175,6 @@ public class MiRobot extends Agent{
                 {
                     camino[i][j] = '.';
                 }
-                System.out.println(" ");
             }
             
             System.out.println("RELLENANDO con x");
@@ -199,15 +206,10 @@ public class MiRobot extends Agent{
                 HAcer contador par+a saber el orden en el que 
                 expandes los nodos            
             */
-            
             int expandido = 0;
-            int result = 0;
    
             Nodo nodometa = new Nodo( destino, tamaño - 1 );
-            
-            Nodo tempnodo = new Nodo( origen, 1 );
-            tempnodo.expandido = expandido;
-            tempnodo.g = 0;
+            Nodo nodoorigen = new Nodo ( origen, 1, 0 );
             
             expandido++;
             
@@ -215,13 +217,13 @@ public class MiRobot extends Agent{
             
         //listaInterior = vacio
             ArrayList listaInterior = new ArrayList();
-            listaInterior.add( tempnodo );
+            listaInterior.add( nodoorigen );
         //listaFrontera = inicio
             ArrayList listaFrontera = new ArrayList();
         // inicializar listaFrontera
             this.obtenerHijos ( 
                     listaFrontera, 
-                    (Nodo)listaInterior.get(0), 
+                    nodoorigen, 
                     listaInterior );
             
         //mientras listaFrontera no esté vacía
@@ -240,7 +242,7 @@ public class MiRobot extends Agent{
                 {
                      //Error, no se encuentra solución
                     this.camino(n);
-                    return 1;
+                    return 999;
                 }
             //sino si n es meta
                 else if ( nodometa.equals( n ) )
@@ -252,6 +254,11 @@ public class MiRobot extends Agent{
                 ArrayList hijosn = new ArrayList();
                 this.obtenerHijos(hijosn, n, listaInterior);
                 
+                if (n.equals(new Nodo(15,18)))
+                {
+                    System.out.println("LLLLLEGASADSDASDASDASDAS");
+                }
+                
                 //para cada hijo m de n que no esté en lista interior
                 for ( Object nodo : hijosn )
                 {
@@ -261,7 +268,7 @@ public class MiRobot extends Agent{
                     m.g = n.g + 1;
                     
                     //si m no está en listaFrontera
-                    if ( !this.esfrontera( listaFrontera, (Nodo)m ) )
+                    if ( !this.esfrontera( listaFrontera, m ) )
                     {
                         //almacenar la f, g y h del nodo en (m.f, m.g, m.h)
                         m.h = calcularh ( m, nodometa );
@@ -283,10 +290,8 @@ public class MiRobot extends Agent{
                     
                 }//fpara
             } //fmientras
-         
-            this.camino(n);
             
-            return result;
+            return 0;
         }
 
         //Función utilizada para la parte de lógica difusa donde se le indica el siguiente punto al que debe ir el robot.
