@@ -60,9 +60,14 @@ public class MiRobot extends Agent{
         // calcular heurística
         public float calcularh ( Nodo _no, Nodo _nd )
         {
-            return (float)Math.sqrt( (_no.f + _no.c)^2 + (_nd.f + _nd.c)^2 );
+            float D = 1;
+            float D2 = 1;
             
-            //return ( _no.f - _nd.f ) + ( _no.c - _nd.c);
+            float dx = Math.abs(_no.f - _nd.f );
+            float dy = Math.abs(_no.c - _nd.c);
+            
+           return (dx + dy);
+            //return D * (dx + dy) + (D2 - 2 * D) * Math.min(dx, dy);
         }
         
         // nodo frontera con menor f(n)
@@ -93,29 +98,33 @@ public class MiRobot extends Agent{
         public void obtenerHijos( ArrayList _lf, Nodo _n, ArrayList _li )
         {   
             Nodo naux;
-            
-            if ( mundo[_n.f - 1][_n.c] == 0 
-                    && !esInterior(new Nodo(_n.f - 1, _n.c), _li) )
-            {
-                naux = new Nodo(_n.f-1, _n.c, _n.g + 1);
-                _lf.add(naux);
-            }
-            if ( mundo[_n.f + 1][_n.c] == 0
-                    && !esInterior(new Nodo(_n.f + 1, _n.c), _li))
-            {
-                naux = new Nodo(_n.f+1, _n.c, _n.g + 1);
-                _lf.add(naux);
-            }
             if ( mundo[_n.f][_n.c + 1] == 0
                     && !esInterior(new Nodo(_n.f, _n.c + 1), _li))
             {
                 naux = new Nodo(_n.f, _n.c+1, _n.g + 1);
+                naux.padre = _n;
+                _lf.add(naux);
+            }
+            if ( mundo[_n.f - 1][_n.c] == 0 
+                    && !esInterior(new Nodo(_n.f - 1, _n.c), _li) )
+            {
+                naux = new Nodo(_n.f-1, _n.c, _n.g + 1);
+                naux.padre = _n;
                 _lf.add(naux);
             }
             if ( mundo[_n.f][_n.c - 1] == 0
                     && !esInterior(new Nodo(_n.f , _n.c - 1), _li))
             {
                 naux = new Nodo(_n.f, _n.c-1, _n.g + 1);
+                naux.padre = _n;
+                _lf.add(naux);
+            }
+
+            if ( mundo[_n.f + 1][_n.c] == 0
+                    && !esInterior(new Nodo(_n.f + 1, _n.c), _li))
+            {
+                naux = new Nodo(_n.f+1, _n.c, _n.g + 1);
+                naux.padre = _n;
                 _lf.add(naux);
             }
         }
@@ -158,7 +167,7 @@ public class MiRobot extends Agent{
                 {
                     camino[i][j] = '.';
                 }
-                System.out.println("MATRIZ camino inicializada");
+                System.out.println(" ");
             }
             
             System.out.println("RELLENANDO con x");
@@ -177,8 +186,9 @@ public class MiRobot extends Agent{
             {
                 for (int j = 0; j < 20; ++j)
                 {
-                    System.out.println(camino[i][j]);
+                    System.out.print(camino[i][j]);
                 }
+                System.out.println(" ");
             }
         }
         
@@ -191,7 +201,7 @@ public class MiRobot extends Agent{
             */
             
             int expandido = 0;
-            int result = 1;
+            int result = 0;
    
             Nodo nodometa = new Nodo( destino, tamaño - 1 );
             
@@ -227,9 +237,11 @@ public class MiRobot extends Agent{
                 
             //si listaFrontera = vacía
                 if ( listaFrontera.isEmpty() )
+                {
                      //Error, no se encuentra solución
+                    this.camino(n);
                     return 1;
-  
+                }
             //sino si n es meta
                 else if ( nodometa.equals( n ) )
                 //devolver
@@ -261,12 +273,12 @@ public class MiRobot extends Agent{
                     }        
                     //sino  si  g’(m)  es  mejor  que  m.g //Verificamos  si  el nuevo camino es mejor
                     // comprarar g del padre antiguo con el nuevo
-                    else if ( m.padre.g < n.g )
+                    else if ( n.g < m.padre.g )
                     {
                         //m.padre = n
                         m.padre = n;
                         //recalcular f y g del nodo m
-                        m.g = m.padre.g + 1;
+                        m.g = n.g + 1;
                     }//fsi
                     
                 }//fpara
