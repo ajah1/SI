@@ -157,6 +157,7 @@ public class MiRobot extends Agent{
             
             return false;
         }
+        
         public void expand()
         {
             for (int i = 0; i < 20; ++i )
@@ -173,7 +174,7 @@ public class MiRobot extends Agent{
         // genera el camino obtenido
         public void camino(Nodo _last)
         {
-            Nodo aux = _last;
+            Nodo aux;
             
             for (int i = 0; i < 20; ++i )
             {
@@ -182,9 +183,7 @@ public class MiRobot extends Agent{
                     camino[i][j] = '.';
                 }
             }
-            
-            System.out.println("RELLENANDO con x");
-            
+
             aux = _last;
             
             while ( aux != null )
@@ -193,9 +192,8 @@ public class MiRobot extends Agent{
                 aux = aux.padre;
             }
             
-            System.out.println("TERMINAR de rellenar x");
-        
-         for (int i = 0; i < 20; ++i )
+            /*
+            for (int i = 0; i < 20; ++i )
             {
                 for (int j = 0; j < 20; ++j)
                 {
@@ -203,6 +201,7 @@ public class MiRobot extends Agent{
                 }
                 System.out.println(" ");
             }
+            */
         }
         
         //Calcula el A*
@@ -258,7 +257,7 @@ public class MiRobot extends Agent{
                 //devolver
                 //reconstruir camino desde la meta al inicio siguiendo los punteros
                     this.camino(n);
-                    this.expand();
+                    //this.expand();
                     return 0;
                 }
             //fsi
