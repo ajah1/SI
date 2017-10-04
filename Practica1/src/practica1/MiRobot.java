@@ -60,16 +60,14 @@ public class MiRobot extends Agent{
         // calcular heurística
         public float calcularh ( Nodo _no, Nodo _nd )
         {
-            /*
-            float dx1 = _no.f - _nd.f;
-            float dy1 = _no.c - _nd.c;
-            float dx2 = 10 - _nd.f;
-            float dy2 = 1 - _nd.c;
-            float cross =  Math.abs(dx1*dy2 - dx2*dy1);
-            return (float)(cross * 0.001);
-            */
             
-            return Math.abs(_no.f - _nd.f) + Math.abs(_no.c - _nd.c);
+            float dx = Math.abs(_no.c - _nd.c);
+            float dy = Math.abs(_no.f - _nd.f);
+
+            return (dx + dy ) + Math.min(dx, dy);
+            //return Math.abs(_no.f - _nd.f) + Math.abs(_no.c - _nd.c);
+           // return (float)Math.sqrt(dx*dx + dy*dy);
+            
         }
         
         // nodo frontera con menor f(n)
@@ -192,7 +190,7 @@ public class MiRobot extends Agent{
                 aux = aux.padre;
             }
             
-            /*
+            
             for (int i = 0; i < 20; ++i )
             {
                 for (int j = 0; j < 20; ++j)
@@ -201,7 +199,7 @@ public class MiRobot extends Agent{
                 }
                 System.out.println(" ");
             }
-            */
+            
         }
         
         //Calcula el A*
@@ -257,7 +255,7 @@ public class MiRobot extends Agent{
                 //devolver
                 //reconstruir camino desde la meta al inicio siguiendo los punteros
                     this.camino(n);
-                    //this.expand();
+                    this.expand();
                     return 0;
                 }
             //fsi
