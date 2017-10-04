@@ -190,7 +190,7 @@ public class MiRobot extends Agent{
                 aux = aux.padre;
             }
             
-            
+            /*
             for (int i = 0; i < 20; ++i )
             {
                 for (int j = 0; j < 20; ++j)
@@ -199,7 +199,7 @@ public class MiRobot extends Agent{
                 }
                 System.out.println(" ");
             }
-            
+            */
         }
         
         //Calcula el A*
@@ -255,7 +255,7 @@ public class MiRobot extends Agent{
                 //devolver
                 //reconstruir camino desde la meta al inicio siguiendo los punteros
                     this.camino(n);
-                    this.expand();
+                    //this.expand();
                     return 0;
                 }
             //fsi
