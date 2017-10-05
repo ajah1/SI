@@ -64,8 +64,8 @@ public class MiRobot extends Agent{
             float dx = Math.abs(_no.c - _nd.c);
             float dy = Math.abs(_no.f - _nd.f);
 
-            return (dx + dy ) + Math.min(dx, dy);
-            //return Math.abs(_no.f - _nd.f) + Math.abs(_no.c - _nd.c);
+            //return (dx + dy ) + Math.min(dx, dy);
+            return (Math.abs(_no.f - _nd.f) + Math.abs(_no.c - _nd.c)) * 10;
            // return (float)Math.sqrt(dx*dx + dy*dy);
             
         }
@@ -97,19 +97,12 @@ public class MiRobot extends Agent{
         // Obtener los nodos hijos que no estén en lista interior [ok]
         public void obtenerHijos( ArrayList _lf, Nodo _n, ArrayList _li )
         {   
-            Nodo naux;
             
+            Nodo naux;
             if ( mundo[_n.f][_n.c + 1] == 0
                     && !esInterior(new Nodo(_n.f, _n.c + 1), _li))
             {
                 naux = new Nodo(_n.f, _n.c+1, _n.g + 1);
-                naux.padre = _n;
-                _lf.add(naux);
-            }            
-            if ( mundo[_n.f - 1][_n.c] == 0 
-                    && !esInterior(new Nodo(_n.f - 1, _n.c), _li) )
-            {
-                naux = new Nodo(_n.f-1, _n.c, _n.g + 1);
                 naux.padre = _n;
                 _lf.add(naux);
             }
@@ -120,12 +113,19 @@ public class MiRobot extends Agent{
                 naux.padre = _n;
                 _lf.add(naux);
             }
-             if ( mundo[_n.f][_n.c - 1] == 0
+            if ( mundo[_n.f][_n.c - 1] == 0
                     && !esInterior(new Nodo(_n.f , _n.c - 1), _li))
             {
                 naux = new Nodo(_n.f, _n.c-1, _n.g + 1);
                 naux.padre = _n;
                 _lf.add(naux);
+            }      
+            if ( mundo[_n.f - 1][_n.c] == 0 
+                    && !esInterior(new Nodo(_n.f - 1, _n.c), _li) )
+            {
+                naux = new Nodo(_n.f-1, _n.c, _n.g + 1);
+                naux.padre = _n;
+               _lf.add(naux);
             }
         }
         
@@ -190,7 +190,7 @@ public class MiRobot extends Agent{
                 aux = aux.padre;
             }
             
-            /*
+            
             for (int i = 0; i < 20; ++i )
             {
                 for (int j = 0; j < 20; ++j)
@@ -199,7 +199,7 @@ public class MiRobot extends Agent{
                 }
                 System.out.println(" ");
             }
-            */
+            
         }
         
         //Calcula el A*
@@ -255,7 +255,7 @@ public class MiRobot extends Agent{
                 //devolver
                 //reconstruir camino desde la meta al inicio siguiendo los punteros
                     this.camino(n);
-                    //this.expand();
+                    this.expand();
                     return 0;
                 }
             //fsi
