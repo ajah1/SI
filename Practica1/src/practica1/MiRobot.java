@@ -65,7 +65,7 @@ public class MiRobot extends Agent{
             float dy = Math.abs(_no.f - _nd.f);
 
             //return (dx + dy ) + Math.min(dx, dy);
-            return (Math.abs(_no.f - _nd.f) + Math.abs(_no.c - _nd.c)) * 10;
+            return (Math.abs(_no.f - _nd.f) + Math.abs(_no.c - _nd.c));
            // return (float)Math.sqrt(dx*dx + dy*dy);
             
         }
@@ -73,24 +73,43 @@ public class MiRobot extends Agent{
         // nodo frontera con menor f(n)
         public Nodo menorFrontera ( ArrayList _lf, Nodo _nd )
         {
+            
             Nodo menorNodo = (Nodo)_lf.get(0);
-            float fm = menorNodo.g + calcularh ( menorNodo, _nd );
+            float hm = calcularh ( menorNodo, _nd );
+            float fm = menorNodo.g + hm;
             
             float f = 0.0f;
+            float h = 0.0f;
             
             for ( Object nodo : _lf )
             {
                 Nodo n = (Nodo)nodo;
                 
                 f = n.g + calcularh ( n, _nd );
+                h = calcularh ( n, _nd );
                 
-                if ( f < fm )
+                if ( h < hm )
                 {
-                    fm = f;
+                    hm = h;
                     menorNodo = n;
                 }
+                else if ( h == hm)
+                {
+                    if ( (_nd.c - n.c) < (_nd.c - menorNodo.c) )
+                    {
+                        hm = h;
+                        menorNodo = n;
+                    }
+                    else if (( _nd.c - n.c) == (_nd.c - menorNodo.c))
+                    {
+                        if ((_nd.f - n.f) < (_nd.f - menorNodo.f))
+                        {
+                            hm = h;
+                            menorNodo = n;
+                        }
+                    }
+                }
             }
-            
             return menorNodo;
         }
         
