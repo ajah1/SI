@@ -72,7 +72,16 @@ FUZZIFY s8
     TERM med    := (0.25,0) (0.75,1) (1.25,0) (1.5,0);
     TERM far    := (0,0) (1.5,1);
 END_FUZZIFY
+FUZZIFY sig
+    TERM mder   := (-180
+    TERM der    :=
+    TERM pder   :=
+    TERM centro :=
+    TERM pizq   :=
+    TERM izq    :=
+    TERM mizq   :=
 
+END_FUZZIFY
 
 // LAS FUNCIONES SE TIENEN QUE SOLAPAR
 //EJEMPLO de definición NO VINCULANTE
