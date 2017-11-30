@@ -17,26 +17,59 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
         
-        //Cargador MNIST de SI
+        ArrayList aprendizaje = new ArrayList();
+        ArrayList testeo = new ArrayList();
+
         MNISTLoader ml = new MNISTLoader();
         ml.loadDBFromPath("./mnist_1000");
         
-        //Accedo a las imagenes de dígito 1
-        ArrayList d0imgs = ml.getImageDatabaseForDigit(4);
         
-        //Y cojo la tercera imagen del dígito 1
-        Imagen img = (Imagen) d0imgs.get(2);
+        System.out.println("\n[?][images separadas en aprendizaje/testeo y obtenido el correcto]");
+        // procentaje de imágenes para aprendizaje
+        int porciento = 60;
         
-        //La invierto para ilustrar como acceder a los pixels
-        byte imageData[] = img.getImageData();
-        for (int i = 0; i < imageData.length; i++)
-            imageData[i] = (byte) (255 - imageData[i]);
+        int porcentaje = 0;
+        ArrayList<ArrayList> correctos = new ArrayList<>();
+        // separar imagenes de aprendizaje y testeo
+        for ( int i = 0; i < 10; ++i )
+        {
+            ArrayList imgs = ml.getImageDatabaseForDigit(i);
+            ArrayList resultado = new ArrayList();
+            
+            int digitos = imgs.size();
+            porcentaje = imgs.size() * porciento / 100;
+            for ( int j = 0; j < digitos; ++j )
+            {
+                Imagen img = (Imagen) imgs.get(j);
+                //byte imageData[] = img.getImageData();
+
+                if ( j < porcentaje )
+                {
+                    aprendizaje.add ( img );
+                    resultado.add(true);
+                }
+                else
+                {
+                    testeo.add ( img );
+                    resultado.add(false);
+                }
+            }
+            correctos.add ( resultado );
+        }
         
-        //Muestro la imagen invertida
-        MostrarImagen imgShow = new MostrarImagen();
-        imgShow.setImage(img);
-        imgShow.mostrar();
+        System.out.println("[?] Imagenes para aprendizaje: " + aprendizaje.size() );
+        System.out.println("[?] Imagenes para testeo: " + testeo.size() );
+        System.out.println("[?] Creados " + correctos.size() + " vectores con conrrectos");
+        
+        aprendizaje.get(1);
+        
+        Debil d = new Debil();
+        ArrayList<Boolean> r;
+        r = d.aplicarClasificadorDebil(d, aprendizaje);
+        System.out.println(r);
+        
 
         
     }
