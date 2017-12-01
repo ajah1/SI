@@ -21,7 +21,7 @@
 hs_err_pid*
 
 #netbeans ignore personal stuff
-nbproject/
+# nbproject/
 
 ## generic files to ignore
 *~

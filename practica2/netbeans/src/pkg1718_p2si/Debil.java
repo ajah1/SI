@@ -30,7 +30,6 @@ public class Debil {
         int umbral = (int)(Math.random() * 255) - 128;
         int direc = (int)(Math.random() * 2);
        
-        
         _umbral = umbral;
         _pixel = posicion;
         
@@ -38,9 +37,6 @@ public class Debil {
             _direccion = 1;
         else
             _direccion = -1;
-        
-        System.out.println(_pixel +" "+ _umbral+" "+_direccion);
-   
     }
     
     // resultado_clasificación = aplicarClasificadorDebil (clasificador, datos )
@@ -49,12 +45,13 @@ public class Debil {
         ArrayList<Boolean> clasificacion = new ArrayList();
         boolean aux;
         
-        for (int i = 0; i < entrenamiento.size(); i++) {
+        for ( int i = 0; i < entrenamiento.size(); i++ ) 
+        {
             Imagen img = (Imagen)entrenamiento.get(i);
             byte imageData[] = img.getImageData();
             
             int umbralimagen = imageData[p_debil._pixel];
-            System.out.println("umbral de la imagen: " + umbralimagen);
+            System.out.println ( "umbral de la imagen: " + umbralimagen );
             
             if(p_debil._direccion == 1)
                 if(p_debil._umbral >= umbralimagen)
@@ -69,7 +66,7 @@ public class Debil {
                             
             clasificacion.add(aux);
         }
-        System.out.println(_pixel +" "+ _umbral+" "+_direccion);
+        
         return clasificacion;
     }
     
