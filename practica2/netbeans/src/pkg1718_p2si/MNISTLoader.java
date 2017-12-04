@@ -27,7 +27,7 @@ public class MNISTLoader {
         //de las imágenes disponibles por dígito
         for (int i=0;i<10; i++){
             mnistImageDB[i] = new ArrayList();
-            System.out.println("Loaded digit "+i);
+            //System.out.println("Loaded digit "+i);
             File[] files = new File(path,"d"+i).listFiles();
             for (File file : files) {
                 if (file.isFile()) {
@@ -37,7 +37,7 @@ public class MNISTLoader {
             }
         }
         
-        System.out.println("Loaded "+ imagesCount + " images...");
+        //System.out.println("Loaded "+ imagesCount + " images...");
         
     }
     
