@@ -23,8 +23,7 @@ public class Debil {
     // dirección + -
     private int _direccion = 0;
     
-    
-    public Debil ()
+        public Debil ()
     {
         int posicion = (int)(Math.random() * 784);
         int umbral = (int)(Math.random() * 255) - 128;
@@ -38,6 +37,7 @@ public class Debil {
         else
             _direccion = -1;
     }
+
     
     // resultado_clasificación = aplicarClasificadorDebil (clasificador, datos )
     public ArrayList aplicarClasificadorDebil ( Debil p_debil, ArrayList entrenamiento )
