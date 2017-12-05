@@ -22,26 +22,55 @@ public class Debil {
     private int _pixel = 0;
     // dirección + -
     private int _direccion = 0;
+    // confianza del clasificadores
+    private float _confianza = 0.0f;
+
+
     
-        public Debil ()
+    public Debil ()
     {
+        System.out.println("[Debil] Clasificador debil inicializado");
         int posicion = (int)(Math.random() * 784);
         int umbral = (int)(Math.random() * 255) - 128;
         int direc = (int)(Math.random() * 2);
-       
+        
         _umbral = umbral;
         _pixel = posicion;
         
-        if ( direc == 1)
+        if ( direc == 1 )
             _direccion = 1;
         else
             _direccion = -1;
     }
 
     
-    // resultado_clasificación = aplicarClasificadorDebil (clasificador, datos )
-    public ArrayList aplicarClasificadorDebil ( Debil p_debil, ArrayList entrenamiento )
+    // calcular la h del debil
+    public int h ( Imagen imagen )
     {
+        int resultado = 0;
+        
+        if ( _direccion == 1 )
+        {
+            if ( _umbral >= imagen.getImageData()[_pixel] )
+                resultado = 1;
+            else
+                resultado = -1;
+        }
+        else if ( _direccion == -1 )
+        {
+            if ( _umbral <= imagen.getImageData()[_pixel] )
+                resultado = 1;
+            else
+                resultado = -1;
+        }
+        
+        return resultado;
+    }
+    
+    // resultado_clasificación = aplicarClasificadorDebil (clasificador, datos )
+    public ArrayList aplicarClasificadorDebil ( ArrayList entrenamiento )
+    {
+        System.out.println("[Debil] Aplicando clasificador debil...");
         ArrayList<Boolean> clasificacion = new ArrayList();
         boolean aux;
         
@@ -50,19 +79,18 @@ public class Debil {
             Imagen img = (Imagen)entrenamiento.get(i);
             byte imageData[] = img.getImageData();
             
-            int umbralimagen = imageData[p_debil._pixel];
-            System.out.println ( "umbral de la imagen: " + umbralimagen );
+            int umbralimagen = imageData[this._pixel];
+            //System.out.println ( "umbral de la imagen: " + umbralimagen );
             
-            if(p_debil._direccion == 1)
-                if(p_debil._umbral >= umbralimagen)
+            if(this._direccion == 1)
+                if(this._umbral >= umbralimagen)
                     aux = true;
                 else
                      aux = false;
+            else if(this._umbral < umbralimagen)
+                aux = true;
             else
-                if(p_debil._umbral < umbralimagen)
-                    aux = true;
-                else
-                    aux = false;
+                aux = false;
                             
             clasificacion.add(aux);
         }
@@ -70,12 +98,24 @@ public class Debil {
         return clasificacion;
     }
     
-    // obtenerErrorClasificador ( clasificador, datos, D )
-    public float obtenerErrorClasificador ( Debil p_debil, byte [] datos, float p_D )
+    // comprar vector generado en la función anterior con
+    // el vector correcto generado
+    public void ErrorClasificador ( ArrayList<Imagen> aprendizaje, ArrayList correcto )
     {
-        return 0.0f;
+        System.out.println("[Debil] Calcular error del clasificador...");
+        
+        ArrayList clasificacion =  this.aplicarClasificadorDebil ( aprendizaje );
+        
+        for ( int i = 0; i < correcto.size(); ++i ) 
+        {
+          if ( !clasificacion.get( i ).equals( aprendizaje.get( i ) ) ) 
+              _error = _error + aprendizaje.get(i).getPeso();
+        }
+        _confianza = 0.5f * (float)Math.log10(1 - _error ) / _error;
     }
 
+    // 
+    
     // getters and setters
     public float getUmbral () {
         return _umbral;
@@ -109,4 +149,11 @@ public class Debil {
         this._direccion = direccion;
     }
     
+    public float getConfianza() {
+        return _confianza;
+    }
+
+    public void setConfianza(float _confianza) {
+        this._confianza = _confianza;
+    }
 }

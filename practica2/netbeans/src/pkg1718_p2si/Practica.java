@@ -13,40 +13,43 @@ import java.util.ArrayList;
  */
 public final class Practica 
 {
-    private int porcentajeEntrenamiento = 60;
-    private int totalImagenes = 1000;
-    private int cantidadEntrenamiento = totalImagenes * porcentajeEntrenamiento / 100;
+    private int _porcentajeEntrenamiento = 80;
+    private int _totalImagenes = 1000;
+    private int _cantidadEntrenamiento = _totalImagenes * _porcentajeEntrenamiento / 100;
 
-    private ArrayList cantidad = new ArrayList();
-    private ArrayList aprendizaje = new ArrayList ();
-    private ArrayList testeo = new ArrayList ();
+    private ArrayList _cantidad = new ArrayList();
+    private ArrayList _aprendizaje = new ArrayList ();
+    private ArrayList _testeo = new ArrayList ();
     
-    private ArrayList<ArrayList> correctos = new ArrayList<>();
+    private ArrayList<ArrayList> _correctos = new ArrayList<>();
     
-    private MNISTLoader ml = new MNISTLoader ();
+    private float [] _pesosImagenes = new float [ _cantidadEntrenamiento ];
+    
+    private MNISTLoader _ml = new MNISTLoader ();
     
     Practica()
     {
-        ml.loadDBFromPath ( "./mnist_1000" );
-        
-        System.out.println ( "[Practica] Imágenes a cargar: " + totalImagenes );
-        System.out.println ( "[Practica] Porcentaje a entrenar: " + porcentajeEntrenamiento );
-        System.out.println ( "[Practica] Imagenes a entrenar: " + cantidadEntrenamiento + "\n");
+        _ml.loadDBFromPath ( "./mnist_1000" );
         
         cantidad();
         correcto();
         separarImagenes();
+        
+        System.out.println ("[Practica] Imágenes a cargar: " + _totalImagenes );
+        System.out.println ("[Practica] Porcentaje a entrenar: " + _porcentajeEntrenamiento );
+        System.out.println ("[Practica] Imagenes a entrenar: " + _aprendizaje.size() );
+        System.out.println ("[Practica] Imagenes a testear: " + _testeo.size() );
     }
-
+    
     // CANTIDAD DE IMÁGENES POR DÍGITO
     private void cantidad ()
     {
         System.out.println("[Practica] Obtenida cantidad imágenes por dígito...");
         for ( int i = 0; i < 10; ++i )
         {
-            ArrayList imgs = ml.getImageDatabaseForDigit(i);
+            ArrayList imgs = _ml.getImageDatabaseForDigit(i);
             int size = imgs.size();
-            cantidad.add ( size );
+            _cantidad.add ( size );
         }
     }
 
@@ -55,13 +58,13 @@ public final class Practica
     {
         System.out.println("[Practica] Array bidimensional con clasificación correcta generado...");
         int inicio = 0;
-        int fin = (int) cantidad.get(0) - 1;
+        int fin = (int) _cantidad.get(0) - 1;
         
         for ( int i = 0; i < 10; ++i )
         {
             ArrayList resultado = new ArrayList();
             
-            for ( int j = 0; j < getTotalImagenes(); ++j )
+            for ( int j = 0; j < _cantidadEntrenamiento; ++j )
             {
                 boolean rango = (j >= inicio) && (j<=fin);
                 if ( rango ) 
@@ -72,9 +75,9 @@ public final class Practica
             
             inicio = fin + 1;
             if ( i != 9)
-                fin += (int) cantidad.get ( i+1 );
+                fin += (int) _cantidad.get ( i+1 );
             
-            correctos.add ( resultado );
+            _correctos.add ( resultado );
         }
     }
     
@@ -82,19 +85,21 @@ public final class Practica
     private void separarImagenes()
     {
         System.out.println("[Practica] Imagenes separadas en testeo y entrenamiento...");
+        int separarImagenes = 0;
         for ( int i = 0; i < 10; ++i )
         {
-            ArrayList imgs = ml.getImageDatabaseForDigit(i);
+            ArrayList imgs = _ml.getImageDatabaseForDigit(i);
             
             int digitos = imgs.size();
             for ( int j = 0; j < digitos; ++j )
             {
                 Imagen img = (Imagen) imgs.get(j);
 
-                if ( j < cantidadEntrenamiento )
-                    aprendizaje.add ( img );
+                separarImagenes = _porcentajeEntrenamiento*digitos / 100;
+                if ( j <  separarImagenes )
+                    _aprendizaje.add ( img );
                 else
-                    testeo.add ( img );
+                    _testeo.add ( img );
             }
         }
     }
@@ -104,7 +109,7 @@ public final class Practica
      * @return
      */
     public int getPorcentajeEntrenamiento() {
-        return porcentajeEntrenamiento;
+        return _porcentajeEntrenamiento;
     }
 
     /**
@@ -112,7 +117,7 @@ public final class Practica
      * @return
      */
     public int getTotalImagenes() {
-        return totalImagenes;
+        return _totalImagenes;
     }
 
     /**
@@ -120,7 +125,7 @@ public final class Practica
      * @return
      */
     public int getCantidadEntrenamiento() {
-        return cantidadEntrenamiento;
+        return _cantidadEntrenamiento;
     }
 
     /**
@@ -128,7 +133,7 @@ public final class Practica
      * @return
      */
     public ArrayList getCantidad() {
-        return cantidad;
+        return _cantidad;
     }
     
     /**
@@ -136,7 +141,7 @@ public final class Practica
      * @return
      */
     public MNISTLoader getMl() {
-        return ml;
+        return _ml;
     }
 
     /**
@@ -144,7 +149,7 @@ public final class Practica
      * @param ml
      */
     public void setMl(MNISTLoader ml) {
-        this.ml = ml;
+        this._ml = ml;
     }
 
     /**
@@ -152,7 +157,7 @@ public final class Practica
      * @param porcentajeEntrenamiento
      */
     public void setPorcentajeEntrenamiento(int porcentajeEntrenamiento) {
-        this.porcentajeEntrenamiento = porcentajeEntrenamiento;
+        this._porcentajeEntrenamiento = porcentajeEntrenamiento;
     }
 
     /**
@@ -160,7 +165,7 @@ public final class Practica
      * @param totalImagenes
      */
     public void setTotalImagenes(int totalImagenes) {
-        this.totalImagenes = totalImagenes;
+        this._totalImagenes = totalImagenes;
     }
 
     /**
@@ -168,7 +173,7 @@ public final class Practica
      * @param cantidadEntrenamiento
      */
     public void setCantidadEntrenamiento(int cantidadEntrenamiento) {
-        this.cantidadEntrenamiento = cantidadEntrenamiento;
+        this._cantidadEntrenamiento = cantidadEntrenamiento;
     }
 
     /**
@@ -176,7 +181,7 @@ public final class Practica
      * @param cantidad
      */
     public void setCantidad(ArrayList cantidad) {
-        this.cantidad = cantidad;
+        this._cantidad = cantidad;
     }
     
     /**
@@ -184,7 +189,7 @@ public final class Practica
      * @param aprendizaje
      */
     public void setAprendizaje(ArrayList aprendizaje) {
-        this.aprendizaje = aprendizaje;
+        this._aprendizaje = aprendizaje;
     }
 
     /**
@@ -192,7 +197,7 @@ public final class Practica
      * @param testeo
      */
     public void setTesteo(ArrayList testeo) {
-        this.testeo = testeo;
+        this._testeo = testeo;
     }
 
     /**
@@ -200,7 +205,7 @@ public final class Practica
      * @param correctos
      */
     public void setCorrectos(ArrayList<ArrayList> correctos) {
-        this.correctos = correctos;
+        this._correctos = correctos;
     }
 
     /**
@@ -208,7 +213,7 @@ public final class Practica
      * @return
      */
     public ArrayList getAprendizaje() {
-        return aprendizaje;
+        return _aprendizaje;
     }
 
     /**
@@ -216,7 +221,7 @@ public final class Practica
      * @return
      */
     public ArrayList getTesteo() {
-        return testeo;
+        return _testeo;
     }
 
     /**
@@ -224,7 +229,14 @@ public final class Practica
      * @return
      */
     public ArrayList<ArrayList> getCorrectos() {
-        return correctos;
+        return _correctos;
     }
-    
+
+    public void setPesosImagenes(float[] pesosImagenes) {
+        this._pesosImagenes = pesosImagenes;
+    }
+
+    public float[] getPesosImagenes() {
+        return _pesosImagenes;
+    }    
 }
