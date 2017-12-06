@@ -5,6 +5,8 @@
  */
 package pkg1718_p2si;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author fidel
@@ -18,12 +20,15 @@ public class Main
         
         System.out.println("");
         
-       AdaBoost adaboost = new AdaBoost( 20, 800 );
+       AdaBoost adaboost = new AdaBoost( 50, 200 );
         
        Fuerte f;
+       ArrayList resultado = new ArrayList ( 10 );
        for ( int i = 0; i < 10; ++i )
        {
-            f = adaboost.algoritmo( p.getAprendizaje(), p.getCorrectos().get(i) );  
+           System.out.println("---------------------------> " + i);
+           adaboost.algoritmo( p.getAprendizaje(), p.getCorrectos().get(i));
        }
+      // resultado.add( adaboost.algoritmo( p.getAprendizaje(), p.getCorrectos().get(8) ) );
     }
 }

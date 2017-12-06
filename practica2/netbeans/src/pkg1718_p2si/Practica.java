@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public final class Practica 
 {
-    private int _porcentajeEntrenamiento = 80;
+    private int _porcentajeEntrenamiento = 70;
     private int _totalImagenes = 1000;
     private int _cantidadEntrenamiento = _totalImagenes * _porcentajeEntrenamiento / 100;
 

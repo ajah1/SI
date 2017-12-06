@@ -17,7 +17,7 @@ public class Debil {
     // umbral [0,254]
     private int _umbral = 0;
     // error
-    private float _error = 0.0f;
+    private float _error = 1.0f;
     // pixel [0, 783]
     private int _pixel = 0;
     // dirección + -
@@ -25,24 +25,22 @@ public class Debil {
     // confianza del clasificadores
     private float _confianza = 0.0f;
 
-
-    
     public Debil ()
     {
         //System.out.println("[Debil] Clasificador debil inicializado");
         int posicion = (int)(Math.random() * 784);
         int umbral = (int)(Math.random() * 255) - 128;
         int direc = (int)(Math.random() * 2);
-        
+       
+        _error = 0.0f; 
         _umbral = umbral;
         _pixel = posicion;
         
-        if ( direc == 1 )
-            _direccion = 1;
-        else
+        if ( direc == 0 )
             _direccion = -1;
+        else
+            _direccion = 1;
     }
-
     
     // calcular la h del debil
     public int h ( Imagen imagen )
@@ -51,14 +49,14 @@ public class Debil {
         
         if ( _direccion == 1 )
         {
-            if ( _umbral >= imagen.getImageData()[_pixel] )
+            if ( _umbral < imagen.getImageData()[_pixel] )
                 resultado = 1;
             else
                 resultado = -1;
         }
         else if ( _direccion == -1 )
         {
-            if ( _umbral <= imagen.getImageData()[_pixel] )
+            if ( _umbral >= imagen.getImageData()[_pixel] )
                 resultado = 1;
             else
                 resultado = -1;
@@ -72,25 +70,23 @@ public class Debil {
     {
         //System.out.println("[Debil] Aplicando clasificador debil...");
         ArrayList<Boolean> clasificacion = new ArrayList();
-        boolean aux;
+        boolean aux = false;
         
         for ( int i = 0; i < entrenamiento.size(); i++ ) 
         {
             Imagen img = (Imagen)entrenamiento.get(i);
             byte imageData[] = img.getImageData();
             
-            int umbralimagen = imageData[this._pixel];
+            int umbralimagen = imageData[this._pixel]; //+ 128;
             //System.out.println ( "umbral de la imagen: " + umbralimagen );
             
-            if(this._direccion == 1)
-                if(this._umbral >= umbralimagen)
+            if(this._direccion > 0)
+            {
+                if(umbralimagen >= this._umbral)
                     aux = true;
-                else
-                     aux = false;
-            else if(this._umbral < umbralimagen)
+            }
+            else if(umbralimagen < this._umbral)
                 aux = true;
-            else
-                aux = false;
                             
             clasificacion.add(aux);
         }
@@ -102,16 +98,14 @@ public class Debil {
     // el vector correcto generado
     public void ErrorClasificador ( ArrayList<Imagen> aprendizaje, ArrayList correcto )
     {
-        //System.out.println("[Debil] Calcular error del clasificador...");
-        
         ArrayList clasificacion =  this.aplicarClasificadorDebil ( aprendizaje );
         
-        for ( int i = 0; i < correcto.size(); ++i ) 
+        for ( int i = 0; i < clasificacion.size(); ++i ) 
         {
-          if ( !clasificacion.get( i ).equals( aprendizaje.get( i ) ) ) 
-              _error = _error + aprendizaje.get(i).getPeso();
+            if ( clasificacion.get(i).equals(correcto.get(i)) )  
+                _error += aprendizaje.get(i).getPeso();
         }
-        _confianza = 0.5f * (float)Math.log10(1 - _error ) / _error;
+        _confianza = 0.5f * (float)Math.log10(1.0f - _error ) / _error;
     }
 
     // 
