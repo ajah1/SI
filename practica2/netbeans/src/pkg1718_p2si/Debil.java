@@ -29,7 +29,7 @@ public class Debil {
     
     public Debil ()
     {
-        System.out.println("[Debil] Clasificador debil inicializado");
+        //System.out.println("[Debil] Clasificador debil inicializado");
         int posicion = (int)(Math.random() * 784);
         int umbral = (int)(Math.random() * 255) - 128;
         int direc = (int)(Math.random() * 2);
@@ -70,7 +70,7 @@ public class Debil {
     // resultado_clasificación = aplicarClasificadorDebil (clasificador, datos )
     public ArrayList aplicarClasificadorDebil ( ArrayList entrenamiento )
     {
-        System.out.println("[Debil] Aplicando clasificador debil...");
+        //System.out.println("[Debil] Aplicando clasificador debil...");
         ArrayList<Boolean> clasificacion = new ArrayList();
         boolean aux;
         
@@ -102,7 +102,7 @@ public class Debil {
     // el vector correcto generado
     public void ErrorClasificador ( ArrayList<Imagen> aprendizaje, ArrayList correcto )
     {
-        System.out.println("[Debil] Calcular error del clasificador...");
+        //System.out.println("[Debil] Calcular error del clasificador...");
         
         ArrayList clasificacion =  this.aplicarClasificadorDebil ( aprendizaje );
         

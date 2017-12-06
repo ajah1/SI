@@ -14,13 +14,16 @@ public class Main
 
     public static void main ( String[] args ) 
     {
-        Practica practica = new Practica();
+        Practica p = new Practica();
         
         System.out.println("");
         
-        AdaBoost adaboost = new AdaBoost( 30, 2000 );
+       AdaBoost adaboost = new AdaBoost( 20, 800 );
         
-        adaboost.algoritmo( practica.getAprendizaje() );
+       Fuerte f;
+       for ( int i = 0; i < 10; ++i )
+       {
+            f = adaboost.algoritmo( p.getAprendizaje(), p.getCorrectos().get(i) );  
+       }
     }
-    
 }

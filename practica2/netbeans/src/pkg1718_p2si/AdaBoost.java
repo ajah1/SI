@@ -23,38 +23,80 @@ public class AdaBoost
         _numPruebas = numPruebas;
     }
     
-     public void algoritmo ( ArrayList<Imagen> entrenamiento ) 
+     public Fuerte algoritmo ( ArrayList<Imagen> entrenamiento, ArrayList<Boolean> real ) 
     {
+        Fuerte fuerte = new Fuerte();
+        
+        boolean auxiliar;
+        int comprobarIguales;
+        float numerador = 0.0f;
+        float Z = 0.0f;
+        float resultadoFuerte = 0.0f;
+        
         // inicializar distribución de pesos
         int sizeEntrenamiento = entrenamiento.size();
         for ( int i = 0; i < sizeEntrenamiento; ++i )
             entrenamiento.get(i).setPeso(1.0f / sizeEntrenamiento) ;
         
-        System.out.print("[adaBoost:algoritmo] Pesos de las imágenes inicialziadas con el valor: ");
-        System.out.println( "1/"+sizeEntrenamiento + " = "+  1.0f / sizeEntrenamiento );
-        
         // entrenar/buscar clasificadores debiles
         for (int i = 0; i < _numclasificadores; ++i )
         {
-         
-            // quedarse con la mejor prueba
-            for ( int j = 0; j < _numPruebas; ++j )
+            Debil debil = new Debil();
+            
+            for ( int k = 0; k < _numPruebas; ++k )
             {
-                // 1. entrenar el debil
-
-                // quedarse con el mejor
-
-                // añadir el mejor obtenido
-
-                // 2. calcular/obtener confianza de este clasificador
-
-                // 3. Actualizar D
-
-                //peso del clasificador debil para esta i
-
-                // 4. Actualizar el clasificador fuerte y coger el mejor
+                Debil prueba = new Debil();
+                ArrayList aplicado;
+                
+                aplicado = prueba.aplicarClasificadorDebil(entrenamiento);
+                
+                prueba.ErrorClasificador( entrenamiento, aplicado );
+                
+                
+                if ( k == 0 )
+                    debil = prueba;
+                else if ( prueba.getError() < debil.getError() )
+                    debil = prueba;
             }
+
+            fuerte.addDebil(debil);
+            
+            float confianzaDebil = debil.getConfianza();
+            
+            for ( int j = 0; j < entrenamiento.size(); ++j )
+            {
+                if ( debil.h(entrenamiento.get(j)) == 1)
+                    auxiliar = true;
+                else
+                    auxiliar = false;
+                
+                if ( real.get(j).equals(auxiliar) )
+                    comprobarIguales = 1;
+                else
+                    comprobarIguales = -1;
+                
+                numerador = entrenamiento.get(j).getPeso() * (float) Math.pow(Math.E, -confianzaDebil * comprobarIguales);
+                entrenamiento.get(j).setPeso(numerador);
+            }
+            
+            Z = 0.0f;
+            
+            for ( int j = 0; j < entrenamiento.size(); ++j)
+                Z += entrenamiento.get(j).getPeso();
+            
+            for ( int j = 0; j < entrenamiento.size(); ++j )
+                entrenamiento.get(j).setPeso( entrenamiento.get(j).getPeso() / Z);
+            
+            resultadoFuerte = 0.0f;
+            
+            for ( int j = 0; j < entrenamiento.size(); ++j )
+                resultadoFuerte += fuerte.H( entrenamiento.get(j) );
+            
+            
+            if ( resultadoFuerte == 0.0f )
+                return fuerte;
            
         }
+        return fuerte;
     }
 }
