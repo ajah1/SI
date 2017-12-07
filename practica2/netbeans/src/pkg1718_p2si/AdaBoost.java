@@ -9,13 +9,18 @@ import java.util.ArrayList;
 
 /**
  *
- * @author alex
+ * @author Alejandro Jesús Aliaga Hyder 48765284V
  */
 public class AdaBoost 
 {
     private int _numclasificadores = 0;
     private int _numPruebas = 0;
-    
+    /**
+     * Constructor parametrizado con el número de clasificadores a obtener por
+     * cada clasificador fuerte y el número de pruebas para obtener el debil
+     * @param numclasificadores
+     * @param numPruebas 
+     */
     public AdaBoost ( int numclasificadores, int numPruebas )
     {
         System.out.println("[AdaBoost]: inicializado");
@@ -23,30 +28,34 @@ public class AdaBoost
         _numPruebas = numPruebas;
     }
     
+    /**
+     * Algortimo adaboost, devuelve el clasificador fuerte con la lista  de
+     * débiles obtenidoss
+     * @param entrenamiento
+     * @param real
+     * @return 
+     */
      public Fuerte algoritmo ( ArrayList<Imagen> entrenamiento, ArrayList<Boolean> real ) 
     {
         Fuerte fuerte = new Fuerte();
         
-        boolean auxiliar;
-        int comprobarIguales;
         float numerador = 0.0f;
-        float Z = 0.0f;
-        float resultadoFuerte = 0.0f;
         
-        // inicializar distribución de pesos
-        int sizeEntrenamiento = entrenamiento.size();
-        float pesoInicial = 1.0f / sizeEntrenamiento;
-        for ( int i = 0; i < sizeEntrenamiento; ++i )
-            entrenamiento.get(i).setPeso( pesoInicial ) ;
+        // INICIALIZAR LA DISTRIBUCIÓN DE PESOS
+        float pesoInicial = 1.0f / entrenamiento.size();
+        entrenamiento.forEach((img) -> {
+            img.setPeso ( pesoInicial );
+        });
         
         
-        //ArrayList aplicado;
-        // entrenar/buscar clasificadores debiles
+        // CLASIFICADORES A ENTRENAR
         for (int i = 0; i < _numclasificadores; ++i )
         {
-            Debil debil = new Debil();
-            debil.ErrorClasificador ( entrenamiento, real);
             
+            Debil debil = new Debil();
+            debil.ErrorClasificador ( entrenamiento, real );
+            
+            // ENTRENAR CLASIFICADORES
             for ( int k = 0; k < _numPruebas; ++k )
             {
                 Debil prueba = new Debil();
@@ -56,41 +65,38 @@ public class AdaBoost
                     debil = prueba;
             }
 
-            System.out.println("Error: " + debil.getError());
-            fuerte.addDebil(debil);
-            ArrayList<Boolean> clas = debil.aplicarClasificadorDebil(entrenamiento);
+            System.out.println ( "Error: " + debil.getError() );
             
+            fuerte.addDebil ( debil );
+            ArrayList<Boolean> clasificados = debil.aplicarClasificadorDebil ( entrenamiento );
+            
+            
+            // ACTUALIZAR PESOS IMÁGENES
+            float Z = 0.0f;
+            float peso;
             float confianzaDebil = debil.getConfianza();
-            
-            Z = 0.0f;
             for ( int j = 0; j < entrenamiento.size(); ++j )
             {
-                if ( debil.h(entrenamiento.get(j)) == 1)
-                    auxiliar = true;
+                peso = entrenamiento.get(j).getPeso();
+                if ( clasificados.get(j).equals ( real.get(j) ) )
+                    numerador = peso * (float) Math.pow ( Math.E, -confianzaDebil );
                 else
-                    auxiliar = false;
+                    numerador = peso * (float) Math.pow ( Math.E, confianzaDebil );
                 
-                //if ( real.get(j).equals(auxiliar) )
-                if ( clas.get(j).equals(real.get(j)) )
-                    numerador = entrenamiento.get(j).getPeso() * (float) Math.pow(Math.E, -confianzaDebil );
-                else
-                    numerador = entrenamiento.get(j).getPeso() * (float) Math.pow(Math.E, confianzaDebil );
-                
-                entrenamiento.get(j).setPeso( numerador);
+                entrenamiento.get(j).setPeso( numerador );
                 Z += entrenamiento.get(j).getPeso();
             }
             
+            
             // NORMALIZAR LOS PESOS
-            float p = 0.0f;
             for ( int j = 0; j < entrenamiento.size(); ++j )
             {
-                entrenamiento.get(j).setPeso( entrenamiento.get(j).getPeso() / Z );
+                peso = entrenamiento.get(j).getPeso() / Z;
+                entrenamiento.get(j).setPeso ( peso );
             }
-           // System.out.print("Peso a asignar: ");
-            //System.out.println(p);
             
+            // ACTUALIZAR FUERTE
             
-           
         }
         return fuerte;
     }

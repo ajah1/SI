@@ -8,27 +8,34 @@ package pkg1718_p2si;
 import java.util.ArrayList;
 
 /**
- *
- * @author fidel
+ * Crea un objeto "Practica" que contiene la información a operar, un objeto 
+ * "AdaBoost" que contiene el algoritmo.
  */
 public class Main 
 {
-
     public static void main ( String[] args ) 
     {
-        Practica p = new Practica();
-        
+        // Porcentaje de imagenes destinadas al entrenamiento
+        int porcentajeEntrenamiento = 80;
+        Practica p = new Practica( porcentajeEntrenamiento );
         System.out.println("");
         
-       AdaBoost adaboost = new AdaBoost( 50, 200 );
         
-       Fuerte f;
-       ArrayList resultado = new ArrayList ( 10 );
-       for ( int i = 0; i < 10; ++i )
-       {
-           System.out.println("---------------------------> " + i);
-           adaboost.algoritmo( p.getAprendizaje(), p.getCorrectos().get(i));
-       }
-      // resultado.add( adaboost.algoritmo( p.getAprendizaje(), p.getCorrectos().get(8) ) );
+        // numero de pruebas a realizar y la cantidad
+        // de clasificadores débiles a entrenar en el algoritmo adaboost
+        int numeroPruebas = 100;
+        int numeroDebiles = 50;
+        AdaBoost adaboost = new AdaBoost( 50, 100 );
+
+        
+        // llamada a adaBoost para cada dígito, este recibe la clasificación
+        // correcta de las imágenes correspondiente al dígito a calcular
+        for ( int i = 0; i < 10; ++i )
+        {
+            System.out.println("---------------------------> " + i);
+            adaboost.algoritmo( p.getAprendizaje(), p.getCorrectos().get(i));
+        }
+
+        
     }
 }

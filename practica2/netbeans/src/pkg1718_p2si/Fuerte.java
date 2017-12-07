@@ -24,24 +24,23 @@ public class Fuerte {
     {
         _debiles.add(debil);
     }
-    
+    /*
     public float H ( Imagen imagen )
     {
         float calculo = 0.0f;
-        int h = 0;
+        boolean h;
         float conf = 0.0f;
         
         for ( int i = 0; i < _debiles.size(); ++i )
         {
             h = _debiles.get(i).h(imagen);
             conf = _debiles.get(i).getConfianza();
-            if ( h == 1 )
+            if ( h )
                 calculo -= conf;
             else
                 calculo -= conf;
         }
         return calculo;
     }
-    
-  
+    */
 }

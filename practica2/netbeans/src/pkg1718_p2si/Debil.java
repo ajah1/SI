@@ -9,25 +9,26 @@ import java.util.ArrayList;
  */
 
 /**
- *
- * @author alex
+ * @author Alejandro Jesús Aliaga Hyder 48765284V
  */
 public class Debil {
     
     // umbral [0,254]
     private int _umbral = 0;
-    // error
+    // error [0,1]
     private float _error = 1.0f;
-    // pixel [0, 783]
+    // pixel [0,783]
     private int _pixel = 0;
-    // dirección + -
+    // dirección +-1
     private int _direccion = 0;
-    // confianza del clasificadores
+    // confianza del clasificador
     private float _confianza = 0.0f;
 
+    /**
+     *  Constructor por defecto, 
+     */
     public Debil ()
     {
-        //System.out.println("[Debil] Clasificador debil inicializado");
         int posicion = (int)(Math.random() * 784);
         int umbral = (int)(Math.random() * 255) - 128;
         int direc = (int)(Math.random() * 2);
@@ -42,33 +43,33 @@ public class Debil {
             _direccion = 1;
     }
     
-    // calcular la h del debil
-    public int h ( Imagen imagen )
+    
+    public boolean h ( Imagen imagen )
     {
-        int resultado = 0;
+        boolean resultado = false;
         
         if ( _direccion == 1 )
         {
-            if ( _umbral < imagen.getImageData()[_pixel] )
-                resultado = 1;
-            else
-                resultado = -1;
+            if ( _umbral >= imagen.getImageData()[_pixel] )
+                resultado = true;
         }
         else if ( _direccion == -1 )
         {
-            if ( _umbral >= imagen.getImageData()[_pixel] )
-                resultado = 1;
-            else
-                resultado = -1;
+            if ( _umbral < imagen.getImageData()[_pixel] )
+                resultado = true;
         }
-        
         return resultado;
     }
     
-    // resultado_clasificación = aplicarClasificadorDebil (clasificador, datos )
+ 
+    /**
+     * Genera el arrayList necesario para poder calcular el error del clasificador
+     * este es usado en el método que calcula el error.
+     * @param entrenamiento
+     * @return 
+     */
     public ArrayList aplicarClasificadorDebil ( ArrayList entrenamiento )
     {
-        //System.out.println("[Debil] Aplicando clasificador debil...");
         ArrayList<Boolean> clasificacion = new ArrayList();
         boolean aux = false;
         
@@ -77,40 +78,45 @@ public class Debil {
             Imagen img = (Imagen)entrenamiento.get(i);
             byte imageData[] = img.getImageData();
             
-            int umbralimagen = imageData[this._pixel]; //+ 128;
-            //System.out.println ( "umbral de la imagen: " + umbralimagen );
+            int umbralimagen = imageData[this._pixel] ;
             
             if(this._direccion > 0)
             {
-                if(umbralimagen >= this._umbral)
+                if ( umbralimagen >= this._umbral )
+                    aux = true;
+                else if ( umbralimagen < this._umbral )
                     aux = true;
             }
-            else if(umbralimagen < this._umbral)
-                aux = true;
-                            
+            
             clasificacion.add(aux);
+            aux = false;
         }
-        
         return clasificacion;
     }
     
-    // comprar vector generado en la función anterior con
-    // el vector correcto generado
+
+    /**
+     * Genera el error del clasificador debil a partir de la lista de imágenes de
+     * entrenamiento y el vector con la clasficación correcto de las imágenes.
+     * @param aprendizaje
+     * @param correcto 
+     */
     public void ErrorClasificador ( ArrayList<Imagen> aprendizaje, ArrayList correcto )
     {
         ArrayList clasificacion =  this.aplicarClasificadorDebil ( aprendizaje );
         
-        for ( int i = 0; i < clasificacion.size(); ++i ) 
+        for ( int i = 0; i < correcto.size(); ++i ) 
         {
             if ( clasificacion.get(i).equals(correcto.get(i)) )  
                 _error += aprendizaje.get(i).getPeso();
         }
         _confianza = 0.5f * (float)Math.log10(1.0f - _error ) / _error;
     }
-
-    // 
     
-    // getters and setters
+    /**
+     * Getters y Setters
+     * @return 
+     */
     public float getUmbral () {
         return _umbral;
     }
