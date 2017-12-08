@@ -8,60 +8,95 @@ package pkg1718_p2si;
 import java.util.ArrayList;
 
 /**
- *
- * @author alex
+ * Esta clase se encarga de obtener toda la información necesaria para poder 
+ * operar los clasificadores debiles y el algoritmo adaBoost.
+ * Se obtiene en función del procentaje de imagenes a entrenar.
  */
 public final class Practica 
 {
-    private int porcentajeEntrenamiento = 60;
-    private int totalImagenes = 1000;
-    private int cantidadEntrenamiento = totalImagenes * porcentajeEntrenamiento / 100;
+    // porcentaje y numero de imágenes a entrenar
+    private int _porcentajeEntrenamiento;
+    private final int _totalImagenes = 1000;
+    private final int _cantidadEntrenamiento;
 
-    private ArrayList cantidad = new ArrayList();
-    private ArrayList aprendizaje = new ArrayList ();
-    private ArrayList testeo = new ArrayList ();
+    // ArrayList con las imágenes separas en testeo y entrenamiento
+    private final ArrayList _cantidad = new ArrayList();
+    private final ArrayList _aprendizaje = new ArrayList ();
+    private final ArrayList _testeo = new ArrayList ();
     
-    private ArrayList<ArrayList> correctos = new ArrayList<>();
+    // ArrayList bidimensional con la clasificación correcta de las imagenes
+    // para cada dígito.
+    private final ArrayList<ArrayList> _correctos = new ArrayList<>();
+
+    // carga las imágenes a usar
+    private final MNISTLoader _ml = new MNISTLoader ();
     
-    private MNISTLoader ml = new MNISTLoader ();
-    
-    Practica()
+    /**
+    * constructor por defecto, llama a las siguientes funciones
+    * para inicializar los atributos necesarios para realizar el
+    * adaboost
+    * 
+    * @param porcentajeEntrenamiento
+    */
+    public Practica( int porcentajeEntrenamiento )
     {
-        ml.loadDBFromPath ( "./mnist_1000" );
         
-        System.out.println ( "[Practica] Imágenes a cargar: " + totalImagenes );
-        System.out.println ( "[Practica] Porcentaje a entrenar: " + porcentajeEntrenamiento );
-        System.out.println ( "[Practica] Imagenes a entrenar: " + cantidadEntrenamiento + "\n");
+        _porcentajeEntrenamiento = porcentajeEntrenamiento;
+        _cantidadEntrenamiento = _totalImagenes * _porcentajeEntrenamiento / 100;
+        
+        _ml.loadDBFromPath ( "./mnist_1000" );
+        
+        
+        System.out.println ("[Practica] Imágenes a cargar: " + _totalImagenes );
+        System.out.println ("[Practica] Porcentaje a entrenar: " + _porcentajeEntrenamiento );
+        System.out.println ("[Practica] Imagenes a entrenar(valor): " + _cantidadEntrenamiento);
+        System.out.println("-------");
         
         cantidad();
-        correcto();
         separarImagenes();
+        correcto();
+        
+        System.out.println("..........");
+        System.out.println ("[Practica] Size aprendizaje: " + _aprendizaje.size() );
+        System.out.println ("[Practica] Size testeo: " + _testeo.size() );     
+        System.out.println ("[Practica] Size correcto: " + _correctos.size() );
+ 
+                
     }
-
-    // CANTIDAD DE IMÁGENES POR DÍGITO
+    
+    /**
+    * rellena el vector con la cantidad de imágenes de las que se
+    * dispone para cada dígito.
+    */
     private void cantidad ()
     {
         System.out.println("[Practica] Obtenida cantidad imágenes por dígito...");
         for ( int i = 0; i < 10; ++i )
         {
-            ArrayList imgs = ml.getImageDatabaseForDigit(i);
+            ArrayList imgs = _ml.getImageDatabaseForDigit(i);
             int size = imgs.size();
-            cantidad.add ( size );
+            _cantidad.add ( size );
         }
     }
 
-    // OBTENER LOS VECTORES CORRECTOS DE CADA DÍGITO
+    /**
+     * 
+     * CORREGIR SIZE 
+     * 
+     * Rellena un arrayList bidimensional con las clasificación
+     * correcta de las imágenes por dígito.
+     */  
     private void correcto ()
     {
         System.out.println("[Practica] Array bidimensional con clasificación correcta generado...");
         int inicio = 0;
-        int fin = (int) cantidad.get(0) - 1;
+        int fin = (int) _cantidad.get(0) - 1;
         
         for ( int i = 0; i < 10; ++i )
         {
             ArrayList resultado = new ArrayList();
             
-            for ( int j = 0; j < getTotalImagenes(); ++j )
+            for ( int j = 0; j < _cantidadEntrenamiento ; ++j )
             {
                 boolean rango = (j >= inicio) && (j<=fin);
                 if ( rango ) 
@@ -72,159 +107,72 @@ public final class Practica
             
             inicio = fin + 1;
             if ( i != 9)
-                fin += (int) cantidad.get ( i+1 );
+                fin += (int) _cantidad.get ( i+1 ) - 1;
             
-            correctos.add ( resultado );
+            _correctos.add ( resultado );
         }
     }
     
-    //SEPRAR IMÁGENES TESTEO Y ENTRENAMIENTO
+    /**
+    * Separa las imágenes a clasificar en las usadas para el entrenamiento
+    * de los clasificadores débiles y las usadas para testear los debiles
+    * entrenados.
+    */
     private void separarImagenes()
     {
         System.out.println("[Practica] Imagenes separadas en testeo y entrenamiento...");
+        int separarImagenes;
+        int digitos;
         for ( int i = 0; i < 10; ++i )
         {
-            ArrayList imgs = ml.getImageDatabaseForDigit(i);
+            ArrayList imgs = _ml.getImageDatabaseForDigit(i);
             
-            int digitos = imgs.size();
+            digitos = imgs.size();
+            separarImagenes =  _porcentajeEntrenamiento * digitos / 100;
+            System.out.println(digitos);
             for ( int j = 0; j < digitos; ++j )
             {
                 Imagen img = (Imagen) imgs.get(j);
 
-                if ( j < cantidadEntrenamiento )
-                    aprendizaje.add ( img );
+                if ( j > digitos - 2 && i >= 5 )
+                    _aprendizaje.add( img );
+                else if ( j <  separarImagenes )
+                    _aprendizaje.add ( img );
                 else
-                    testeo.add ( img );
+                    _testeo.add ( img );
             }
         }
     }
     
     /**
-     *
-     * @return
+     * getters y setters
+     * @return 
      */
     public int getPorcentajeEntrenamiento() {
-        return porcentajeEntrenamiento;
+        return _porcentajeEntrenamiento;
     }
-
-    /**
-     *
-     * @return
-     */
     public int getTotalImagenes() {
-        return totalImagenes;
+        return _totalImagenes;
     }
-
-    /**
-     *
-     * @return
-     */
     public int getCantidadEntrenamiento() {
-        return cantidadEntrenamiento;
+        return _cantidadEntrenamiento;
     }
-
-    /**
-     *
-     * @return
-     */
     public ArrayList getCantidad() {
-        return cantidad;
+        return _cantidad;
     }
-    
-    /**
-     *
-     * @return
-     */
     public MNISTLoader getMl() {
-        return ml;
+        return _ml;
     }
-
-    /**
-     *
-     * @param ml
-     */
-    public void setMl(MNISTLoader ml) {
-        this.ml = ml;
-    }
-
-    /**
-     *
-     * @param porcentajeEntrenamiento
-     */
     public void setPorcentajeEntrenamiento(int porcentajeEntrenamiento) {
-        this.porcentajeEntrenamiento = porcentajeEntrenamiento;
+        this._porcentajeEntrenamiento = porcentajeEntrenamiento;
     }
-
-    /**
-     *
-     * @param totalImagenes
-     */
-    public void setTotalImagenes(int totalImagenes) {
-        this.totalImagenes = totalImagenes;
-    }
-
-    /**
-     *
-     * @param cantidadEntrenamiento
-     */
-    public void setCantidadEntrenamiento(int cantidadEntrenamiento) {
-        this.cantidadEntrenamiento = cantidadEntrenamiento;
-    }
-
-    /**
-     *
-     * @param cantidad
-     */
-    public void setCantidad(ArrayList cantidad) {
-        this.cantidad = cantidad;
-    }
-    
-    /**
-     *
-     * @param aprendizaje
-     */
-    public void setAprendizaje(ArrayList aprendizaje) {
-        this.aprendizaje = aprendizaje;
-    }
-
-    /**
-     *
-     * @param testeo
-     */
-    public void setTesteo(ArrayList testeo) {
-        this.testeo = testeo;
-    }
-
-    /**
-     *
-     * @param correctos
-     */
-    public void setCorrectos(ArrayList<ArrayList> correctos) {
-        this.correctos = correctos;
-    }
-
-    /**
-     *
-     * @return
-     */
     public ArrayList getAprendizaje() {
-        return aprendizaje;
+        return _aprendizaje;
     }
-
-    /**
-     *
-     * @return
-     */
     public ArrayList getTesteo() {
-        return testeo;
+        return _testeo;
     }
-
-    /**
-     *
-     * @return
-     */
     public ArrayList<ArrayList> getCorrectos() {
-        return correctos;
-    }
-    
+        return _correctos;
+    } 
 }
