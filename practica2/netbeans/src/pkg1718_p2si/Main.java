@@ -16,11 +16,11 @@ public class Main
     public static void main ( String[] args ) 
     {
         // Porcentaje de imagenes destinadas al entrenamiento
-        int porcentajeEntrenamiento = 80;
-        Practica p = new Practica( porcentajeEntrenamiento );
+        int porcentajeEntrenamiento = 70;
+      //  Practica p = new Practica( porcentajeEntrenamiento );
         System.out.println("");
         
-        
+        /*
         // numero de pruebas a realizar y la cantidad
         // de clasificadores débiles a entrenar en el algoritmo adaboost
         int numeroPruebas = 100;
@@ -35,7 +35,30 @@ public class Main
             System.out.println("---------------------------> " + i);
             adaboost.algoritmo( p.getAprendizaje(), p.getCorrectos().get(i));
         }
-
+        */
+        MNISTLoader _ml = new MNISTLoader ();
+         _ml.loadDBFromPath ( "./mnist_1000" );
         
+        int separarImagenes = 0;
+        float s = 0.0f;
+        int digitos;
+        
+        float error = 0.0f;
+        int num = 0;
+        
+        for ( int i = 0; i < 10; ++i )
+        {
+            ArrayList imgs = _ml.getImageDatabaseForDigit(i);
+            digitos = imgs.size();
+            
+            separarImagenes =  porcentajeEntrenamiento * digitos / 100;
+            s = (float)porcentajeEntrenamiento * digitos / 100;
+          
+            error += s % 10;
+            System.out.println(error);
+            num += separarImagenes;
+        }
+        //System.out.println(num);
+       // System.out.println(error);
     }
 }

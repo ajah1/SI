@@ -123,20 +123,19 @@ public final class Practica
         System.out.println("[Practica] Imagenes separadas en testeo y entrenamiento...");
         int separarImagenes;
         int digitos;
+        float error = 0.0f;
         for ( int i = 0; i < 10; ++i )
         {
             ArrayList imgs = _ml.getImageDatabaseForDigit(i);
             
             digitos = imgs.size();
             separarImagenes =  _porcentajeEntrenamiento * digitos / 100;
-            System.out.println(digitos);
+            // System.out.println(digitos);
             for ( int j = 0; j < digitos; ++j )
             {
                 Imagen img = (Imagen) imgs.get(j);
 
-                if ( j > digitos - 2 && i >= 5 )
-                    _aprendizaje.add( img );
-                else if ( j <  separarImagenes )
+                if ( j <  separarImagenes )
                     _aprendizaje.add ( img );
                 else
                     _testeo.add ( img );
