@@ -18,7 +18,7 @@ public class AdaBoost
      */
     public AdaBoost ( int numclasificadores, int numPruebas )
     {
-        System.out.println("[AdaBoost]: inicializado");
+        System.out.println("[AdaBoost]: Inicializado");
         _numclasificadores = numclasificadores;
         _numPruebas = numPruebas;
     }
@@ -44,7 +44,7 @@ public class AdaBoost
         
         
         // CLASIFICADORES A ENTRENAR
-        for (int i = 0; i < _numclasificadores; ++i )
+        for ( int i = 0; i < _numclasificadores; ++i )
         {
             
             Debil mejordebil = new Debil();
@@ -60,8 +60,7 @@ public class AdaBoost
                     mejordebil = prueba;
             }
 
-            //System.out.println ( "Error: " + mejordebil.getError() );
-            
+            // GUARDAMOS EN EL FUERTE EL MEJOR CLASIFICADOR DEBIL
             fuerte.addDebil ( mejordebil );
             ArrayList<Boolean> clasificados = mejordebil.aplicarClasificadorDebil ( entrenamiento );
             

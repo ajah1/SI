@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package pkg1718_p2si;
 
 import java.util.ArrayList;
@@ -25,8 +21,9 @@ public final class Practica
     private final ArrayList _testeo = new ArrayList ();
     
     // ArrayList bidimensional con la clasificación correcta de las imagenes
-    // para cada dígito.
-    private final ArrayList<ArrayList> _correctos = new ArrayList<>();
+    // de entrenamiento para cada dígito.
+    private final ArrayList<ArrayList> _correctosEntrenamiento = new ArrayList<>();
+    private final ArrayList _correctoTesteo = new ArrayList();
 
     // carga las imágenes a usar
     private final MNISTLoader _ml = new MNISTLoader ();
@@ -47,28 +44,27 @@ public final class Practica
         _ml.loadDBFromPath ( "./mnist_1000" );
         
         
-        System.out.println ("[Practica] Imágenes a cargar: " + _totalImagenes );
+        System.out.println ("[Practica] Imágenes a cargar:     " + _totalImagenes );
         System.out.println ("[Practica] Porcentaje a entrenar: " + _porcentajeEntrenamiento );
-        System.out.println ("[Practica] Imagenes a entrenar(valor): " + _cantidadEntrenamiento);
+        System.out.println ("[Practica] Imagenes a entrenar:   " + _cantidadEntrenamiento);
         System.out.println("-------");
         
-        cantidad();
+        cantidadEntrenamiento();
         separarImagenes();
-        correcto();
+        correctoEntrenamiento();
         
         System.out.println("--------");
         System.out.println ("[Practica] Size aprendizaje: " + _aprendizaje.size() );
-        System.out.println ("[Practica] Size testeo: " + _testeo.size() );     
-        System.out.println ("[Practica] Size correcto: " + _correctos.size() );
+        System.out.println ("[Practica] Size testeo:      " + _testeo.size() );     
+        System.out.println ("[Practica] Size correcto:    " + _correctosEntrenamiento.size() );
  
-                
     }
     
     /**
     * rellena el vector con la cantidad de imágenes de las que se
     * dispone para cada dígito.
     */
-    private void cantidad ()
+    private void cantidadEntrenamiento ()
     {
         System.out.println("[Practica] Obtenida cantidad imágenes por dígito...");
         for ( int i = 0; i < 10; ++i )
@@ -86,9 +82,9 @@ public final class Practica
      * Rellena un arrayList bidimensional con las clasificación
      * correcta de las imágenes por dígito.
      */  
-    private void correcto ()
+    private void correctoEntrenamiento ()
     {
-        System.out.println("[Practica] Array bidimensional con clasificación correcta generado...");
+        System.out.println("[Practica] Array clasificación real generada...");
         int fin = (int) _cantidad.get(0) - 1;
         
         for ( int i = 0; i < 10; ++i )
@@ -106,7 +102,7 @@ public final class Practica
                     resultado.add ( false );
             }
             
-            _correctos.add ( resultado );
+            _correctosEntrenamiento.add ( resultado );
         }
         
         
@@ -122,35 +118,30 @@ public final class Practica
         System.out.println("[Practica] Imagenes separadas en testeo y entrenamiento...");
         int separarImagenes;
         int digitos;
-<<<<<<< HEAD:practica2/PRACTICA2SI/src/pkg1718_p2si/Practica.java
-        
+   
         float sumaError = 0;
         float sde;
-=======
-        float error = 0.0f;
->>>>>>> f2e468460eed4b2ed332b51b83eeafaf01e555a8:practica2/netbeans/src/pkg1718_p2si/Practica.java
         for ( int i = 0; i < 10; ++i )
         {
             ArrayList imgs = _ml.getImageDatabaseForDigit(i);
             digitos = imgs.size();
             
-            separarImagenes =  _porcentajeEntrenamiento * digitos / 100;
-<<<<<<< HEAD:practica2/PRACTICA2SI/src/pkg1718_p2si/Practica.java
-           
+            separarImagenes =  _porcentajeEntrenamiento * digitos / 100;    
             sde = (float)digitos * _porcentajeEntrenamiento / 100.0f;
             sumaError += sde - (int)sde;
-            
-=======
-            // System.out.println(digitos);
->>>>>>> f2e468460eed4b2ed332b51b83eeafaf01e555a8:practica2/netbeans/src/pkg1718_p2si/Practica.java
+
             for ( int j = 0; j < digitos; ++j )
             {
                 Imagen img = (Imagen) imgs.get(j);
 
                 if ( j <  separarImagenes )
                     _aprendizaje.add ( img );
+                
                 else
+                {
                     _testeo.add ( img );
+                    _correctoTesteo.add(i);
+                }
             }
         }
         
@@ -174,11 +165,53 @@ public final class Practica
             }
         }
     }
+
+    
+    // APLICAR LOS CLASIFICADORES FUERTES A LAS IMÁGENES DE TESTO
+    public ArrayList aplicarFuertes ( ArrayList<Fuerte> fuertes )
+    {
+        ArrayList mejoresH = new ArrayList( _testeo.size() );
+        float mejor;
+        int pos = 0;
+        for ( Object img : _testeo )
+        {
+            mejor = 0;
+            for ( int j = 0; j < fuertes.size(); ++j )
+            {
+                Fuerte f = fuertes.get(j);
+                if ( f.H( (Imagen)img) > mejor )
+                {
+                    mejor = f.H( (Imagen)img);
+                    pos = j;
+                }
+            }
+            mejoresH.add(pos);
+        }
+        
+        return mejoresH;
+    }
+    
+    // DEVUELVE LA CANTIDAD DE ACIERTOS
+    public int imagenesAcertadas ( ArrayList mejoresH )
+    {
+        int aciertos = 0;
+        
+        for ( int i = 0; i < _testeo.size(); ++i )
+        {
+            if ( mejoresH.get(i) == _correctoTesteo.get(i))
+               aciertos++;
+        }
+        
+        return aciertos;
+    }
     
     /**
      * getters y setters
      * @return 
      */
+    public ArrayList getCorrectoTesteo() {
+        return _correctoTesteo;
+    }
     public int getPorcentajeEntrenamiento() {
         return _porcentajeEntrenamiento;
     }
@@ -204,6 +237,6 @@ public final class Practica
         return _testeo;
     }
     public ArrayList<ArrayList> getCorrectos() {
-        return _correctos;
-    } 
+        return _correctosEntrenamiento;
+    }
 }

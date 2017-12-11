@@ -21,7 +21,7 @@ public class Imagen {
     
     private BufferedImage biImage;
     private byte [] imageData;
-    private float peso = 0.0f;
+    private float _peso = 0.0f;
     
     Imagen(){
         biImage = null;
@@ -72,11 +72,11 @@ public class Imagen {
     }
 
     public float getPeso() {
-        return peso;
+        return _peso;
     }
 
     public void setPeso(float peso) {
-        this.peso = peso;
+        this._peso = peso;
     }
     
 }

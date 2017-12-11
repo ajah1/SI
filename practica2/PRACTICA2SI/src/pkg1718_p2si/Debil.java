@@ -23,7 +23,7 @@ public class Debil {
      */
     public Debil ()
     {
-         _pixel = (int)(Math.random() * 784);
+        _pixel = (int)(Math.random() * 784);
         _umbral = (int)(Math.random() * 255) - 128;
         _direccion = 1;
         

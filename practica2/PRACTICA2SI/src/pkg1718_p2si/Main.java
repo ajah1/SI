@@ -6,7 +6,6 @@
 package pkg1718_p2si;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Crea un objeto "Practica" que contiene la información a operar, un objeto 
@@ -17,59 +16,41 @@ public class Main
     public static void main ( String[] args ) 
     {
         // Porcentaje de imagenes destinadas al entrenamiento
-        int porcentajeEntrenamiento = 62;
+        int porcentajeEntrenamiento = 72;
         Practica p = new Practica( porcentajeEntrenamiento );
         System.out.println("");
         
-        
         // numero de pruebas a realizar y la cantidad
         // de clasificadores débiles a entrenar en el algoritmo adaboost
-        int numeroPruebas = 100;
+        int numeroPruebas = 1000;
         int numeroDebiles = 150;
-        AdaBoost adaboost = new AdaBoost( numeroDebiles, numeroPruebas );
+        System.out.println("[Main] Numero de pruebas: " + numeroPruebas );
+        System.out.println("[Main] Numero de debiles: " + numeroDebiles + "\n");
         
+        AdaBoost adaboost = new AdaBoost( numeroDebiles, numeroPruebas );
+
         
         // llamada a adaBoost para cada dígito, este recibe la clasificación
-        // correcta de las imágenes correspondiente al dígito a calcular
+        // correcta de las imágenes correspondientes al dígito a calcular
         ArrayList<Fuerte> fuertes = new ArrayList();
         for ( int i = 0; i < 10; ++i )
         {
-            System.out.println("---------------------------> " + i);
+            System.out.println("--> " + "fuerte del digito " + i);
             fuertes.add( adaboost.algoritmo( p.getAprendizaje(), p.getCorrectos().get(i)) );
         }
         
-        // obtener la clasificación dada por los fuertes
-        // de las imágenes de testeo
-        ArrayList <Imagen> testear = p.getTesteo();
-        ArrayList mejoresH = new ArrayList( testear.size() );
-        float mejor;
-        int pos = 0;
-        for ( Object img : testear )
-        {
-            mejor = 0;
-            for ( int j = 0; j < fuertes.size(); ++j )
-            {
-                Fuerte f = fuertes.get(j);
-                if ( f.H( (Imagen)img) > mejor )
-                {
-                    mejor = f.H( (Imagen)img);
-                    pos = j;
-                }
-            }
-            mejoresH.add(pos);
-        }
-        
-        System.out.println(mejoresH);
+        // aplicar clasificadores fuertes a las imágenes de testeo
+        ArrayList mejoresH = p.aplicarFuertes ( fuertes );
+
+        System.out.println( "\n[Main] Comparacion real con la generada" );
+        System.out.println( mejoresH);
+        System.out.println( p.getCorrectoTesteo() );
  
-        // obtener el número de aciertos de los fuertes comparando
-        // su clasificación con la real
-        int aciertos = 0;
-        for ( int i = 0; i < testear.size(); ++i )
-        {
-         //   if ( mejoresH.get(i) ==  )
-            aciertos++;
-        }
+
+        // obtener el número de aciertos
+        int numAciertos = p.imagenesAcertadas ( mejoresH );
         
-        System.out.println("ACIERTOS: " + aciertos);
+        System.out.println( "ACIERTOS: " + numAciertos );
+        System.out.println( "FALLOS: " + (p.getTesteo().size() - numAciertos) );
     }
 }

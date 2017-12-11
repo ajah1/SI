@@ -20,11 +20,7 @@ public class Fuerte {
         _debiles = new ArrayList ();
     }
     
-    public void addDebil ( Debil debil )
-    {
-        _debiles.add(debil);
-    }
-    
+
     public float H ( Imagen imagen )
     {
         float H = 0.0f;
@@ -42,9 +38,14 @@ public class Fuerte {
         }
         return H;
     }
+
     
     public ArrayList<Debil> getDebiles ()
     {
         return _debiles;
+    }
+    public void addDebil ( Debil debil )
+    {
+        _debiles.add(debil);
     }
 }
