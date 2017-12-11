@@ -122,19 +122,27 @@ public final class Practica
         System.out.println("[Practica] Imagenes separadas en testeo y entrenamiento...");
         int separarImagenes;
         int digitos;
+<<<<<<< HEAD:practica2/PRACTICA2SI/src/pkg1718_p2si/Practica.java
         
         float sumaError = 0;
         float sde;
+=======
+        float error = 0.0f;
+>>>>>>> f2e468460eed4b2ed332b51b83eeafaf01e555a8:practica2/netbeans/src/pkg1718_p2si/Practica.java
         for ( int i = 0; i < 10; ++i )
         {
             ArrayList imgs = _ml.getImageDatabaseForDigit(i);
             digitos = imgs.size();
             
             separarImagenes =  _porcentajeEntrenamiento * digitos / 100;
+<<<<<<< HEAD:practica2/PRACTICA2SI/src/pkg1718_p2si/Practica.java
            
             sde = (float)digitos * _porcentajeEntrenamiento / 100.0f;
             sumaError += sde - (int)sde;
             
+=======
+            // System.out.println(digitos);
+>>>>>>> f2e468460eed4b2ed332b51b83eeafaf01e555a8:practica2/netbeans/src/pkg1718_p2si/Practica.java
             for ( int j = 0; j < digitos; ++j )
             {
                 Imagen img = (Imagen) imgs.get(j);
