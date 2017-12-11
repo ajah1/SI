@@ -2,21 +2,15 @@ package pkg1718_p2si;
 
 import java.util.ArrayList;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * @author Alejandro Jesús Aliaga Hyder 48765284V
  */
 public class Debil {
     
-    // umbral [0,254]
+    // umbral [-128,128]
     private int _umbral = 0;
     // error [0,1]
-    private float _error = 1.0f;
+    private float _error = 0.0f;
     // pixel [0,783]
     private int _pixel = 0;
     // dirección +-1
@@ -25,22 +19,17 @@ public class Debil {
     private float _confianza = 0.0f;
 
     /**
-     *  Constructor por defecto, 
+     *  Constructor por defecto
      */
     public Debil ()
     {
-        int posicion = (int)(Math.random() * 784);
-        int umbral = (int)(Math.random() * 255) - 128;
-        int direc = (int)(Math.random() * 2);
-       
-        _error = 0.0f; 
-        _umbral = umbral;
-        _pixel = posicion;
+         _pixel = (int)(Math.random() * 784);
+        _umbral = (int)(Math.random() * 255) - 128;
+        _direccion = 1;
         
+        int direc = (int)(Math.random() * 2);
         if ( direc == 0 )
             _direccion = -1;
-        else
-            _direccion = 1;
     }
     
     
@@ -78,16 +67,16 @@ public class Debil {
             Imagen img = (Imagen)entrenamiento.get(i);
             byte imageData[] = img.getImageData();
             
-            int umbralimagen = imageData[this._pixel] ;
+            int umbralimagen = imageData[_pixel];
             
-            if(this._direccion > 0)
+            if ( _direccion == 1 )
             {
-                if ( umbralimagen >= this._umbral )
-                    aux = true;
-                else if ( umbralimagen < this._umbral )
+                if ( _umbral <  umbralimagen )
                     aux = true;
             }
-            
+            else if ( _umbral >=  umbralimagen )
+                    aux = true;
+             
             clasificacion.add(aux);
             aux = false;
         }

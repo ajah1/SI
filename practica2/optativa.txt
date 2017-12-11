@@ -1,2 +1,0 @@
-1 hiperplano es como un clasificador debil (de manera aleatoria 28*28)
-adaboost es el mismo

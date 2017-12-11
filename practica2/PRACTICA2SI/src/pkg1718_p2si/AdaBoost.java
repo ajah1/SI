@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pkg1718_p2si;
 
 import java.util.ArrayList;
@@ -39,7 +34,7 @@ public class AdaBoost
     {
         Fuerte fuerte = new Fuerte();
         
-        float numerador = 0.0f;
+        float numerador;
         
         // INICIALIZAR LA DISTRIBUCIÓN DE PESOS
         float pesoInicial = 1.0f / entrenamiento.size();
@@ -52,29 +47,29 @@ public class AdaBoost
         for (int i = 0; i < _numclasificadores; ++i )
         {
             
-            Debil debil = new Debil();
-            debil.ErrorClasificador ( entrenamiento, real );
+            Debil mejordebil = new Debil();
+            mejordebil.ErrorClasificador ( entrenamiento, real );
             
-            // ENTRENAR CLASIFICADORES
+            // ENTRENAR CLASIFICADORES Y AÑADIR EL MEJOR AL FUERTE
             for ( int k = 0; k < _numPruebas; ++k )
             {
                 Debil prueba = new Debil();
                 prueba.ErrorClasificador ( entrenamiento, real );
                 
-                if ( debil.getError() > prueba.getError() )
-                    debil = prueba;
+                if ( mejordebil.getError() > prueba.getError() )
+                    mejordebil = prueba;
             }
 
-            System.out.println ( "Error: " + debil.getError() );
+            //System.out.println ( "Error: " + mejordebil.getError() );
             
-            fuerte.addDebil ( debil );
-            ArrayList<Boolean> clasificados = debil.aplicarClasificadorDebil ( entrenamiento );
+            fuerte.addDebil ( mejordebil );
+            ArrayList<Boolean> clasificados = mejordebil.aplicarClasificadorDebil ( entrenamiento );
             
             
             // ACTUALIZAR PESOS IMÁGENES
             float Z = 0.0f;
             float peso;
-            float confianzaDebil = debil.getConfianza();
+            float confianzaDebil = mejordebil.getConfianza();
             for ( int j = 0; j < entrenamiento.size(); ++j )
             {
                 peso = entrenamiento.get(j).getPeso();
@@ -84,7 +79,7 @@ public class AdaBoost
                     numerador = peso * (float) Math.pow ( Math.E, confianzaDebil );
                 
                 entrenamiento.get(j).setPeso( numerador );
-                Z += entrenamiento.get(j).getPeso();
+                Z += numerador;
             }
             
             
@@ -94,8 +89,6 @@ public class AdaBoost
                 peso = entrenamiento.get(j).getPeso() / Z;
                 entrenamiento.get(j).setPeso ( peso );
             }
-            
-            // ACTUALIZAR FUERTE
             
         }
         return fuerte;

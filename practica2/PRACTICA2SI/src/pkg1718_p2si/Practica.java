@@ -56,7 +56,7 @@ public final class Practica
         separarImagenes();
         correcto();
         
-        System.out.println("..........");
+        System.out.println("--------");
         System.out.println ("[Practica] Size aprendizaje: " + _aprendizaje.size() );
         System.out.println ("[Practica] Size testeo: " + _testeo.size() );     
         System.out.println ("[Practica] Size correcto: " + _correctos.size() );
@@ -89,7 +89,6 @@ public final class Practica
     private void correcto ()
     {
         System.out.println("[Practica] Array bidimensional con clasificación correcta generado...");
-        int inicio = 0;
         int fin = (int) _cantidad.get(0) - 1;
         
         for ( int i = 0; i < 10; ++i )
@@ -98,19 +97,19 @@ public final class Practica
             
             for ( int j = 0; j < _cantidadEntrenamiento ; ++j )
             {
-                boolean rango = (j >= inicio) && (j<=fin);
-                if ( rango ) 
+                
+                boolean rango =  ( j>=fin ) && ( j < (fin + (int)_cantidad.get(i)) );
+                if ( rango )
                     resultado.add ( true );
+                
                 else
                     resultado.add ( false );
             }
             
-            inicio = fin + 1;
-            if ( i != 9)
-                fin += (int) _cantidad.get ( i+1 ) - 1;
-            
             _correctos.add ( resultado );
         }
+        
+        
     }
     
     /**
@@ -123,23 +122,47 @@ public final class Practica
         System.out.println("[Practica] Imagenes separadas en testeo y entrenamiento...");
         int separarImagenes;
         int digitos;
+        
+        float sumaError = 0;
+        float sde;
         for ( int i = 0; i < 10; ++i )
         {
             ArrayList imgs = _ml.getImageDatabaseForDigit(i);
-            
             digitos = imgs.size();
+            
             separarImagenes =  _porcentajeEntrenamiento * digitos / 100;
-            System.out.println(digitos);
+           
+            sde = (float)digitos * _porcentajeEntrenamiento / 100.0f;
+            sumaError += sde - (int)sde;
+            
             for ( int j = 0; j < digitos; ++j )
             {
                 Imagen img = (Imagen) imgs.get(j);
 
-                if ( j > digitos - 2 && i >= 5 )
-                    _aprendizaje.add( img );
-                else if ( j <  separarImagenes )
+                if ( j <  separarImagenes )
                     _aprendizaje.add ( img );
                 else
                     _testeo.add ( img );
+            }
+        }
+        
+        // corregir error al aplicar el porcentaje
+        float dif = sumaError - (int)sumaError;
+        if ( dif < 0.000001 )
+        {
+            for ( int i = 0; i < (int)sumaError; ++i )
+            {
+                ArrayList imgs = _ml.getImageDatabaseForDigit(i);
+                _aprendizaje.add( imgs.get(i) );
+            }
+        }
+        else if ( dif > 0.99997)
+        {
+
+            for ( int i = 0; i <= (int)sumaError; ++i )
+            {
+                ArrayList imgs = _ml.getImageDatabaseForDigit(i);
+                _aprendizaje.add( imgs.get(i) );
             }
         }
     }

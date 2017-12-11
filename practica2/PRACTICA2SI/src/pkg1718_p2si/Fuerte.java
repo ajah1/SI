@@ -13,8 +13,8 @@ import java.util.ArrayList;
  */
 public class Fuerte {
     
-    private ArrayList<Debil> _debiles;
-    
+    private final ArrayList<Debil> _debiles;
+
     public Fuerte ()
     {
         _debiles = new ArrayList ();
@@ -24,23 +24,27 @@ public class Fuerte {
     {
         _debiles.add(debil);
     }
-    /*
+    
     public float H ( Imagen imagen )
     {
-        float calculo = 0.0f;
+        float H = 0.0f;
         boolean h;
-        float conf = 0.0f;
+        float conf;
         
         for ( int i = 0; i < _debiles.size(); ++i )
         {
             h = _debiles.get(i).h(imagen);
             conf = _debiles.get(i).getConfianza();
             if ( h )
-                calculo -= conf;
+                H += conf;
             else
-                calculo -= conf;
+                H -= conf;
         }
-        return calculo;
+        return H;
     }
-    */
+    
+    public ArrayList<Debil> getDebiles ()
+    {
+        return _debiles;
+    }
 }
