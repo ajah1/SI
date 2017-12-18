@@ -1,3 +1,4 @@
+
 package pkg1718_p2si;
 
 import java.util.ArrayList;
@@ -18,7 +19,6 @@ public class AdaBoost
      */
     public AdaBoost ( int numclasificadores, int numPruebas )
     {
-        System.out.println("[AdaBoost]: Inicializado");
         _numclasificadores = numclasificadores;
         _numPruebas = numPruebas;
     }
@@ -36,21 +36,21 @@ public class AdaBoost
         
         float numerador;
         
-        // INICIALIZAR LA DISTRIBUCIÓN DE PESOS
+        // inicializar la distribución de pesos
         float pesoInicial = 1.0f / entrenamiento.size();
         entrenamiento.forEach((img) -> {
             img.setPeso ( pesoInicial );
         });
         
         
-        // CLASIFICADORES A ENTRENAR
+        // clasificadores a entrenar
         for ( int i = 0; i < _numclasificadores; ++i )
         {
             
             Debil mejordebil = new Debil();
             mejordebil.ErrorClasificador ( entrenamiento, real );
             
-            // ENTRENAR CLASIFICADORES Y AÑADIR EL MEJOR AL FUERTE
+            // entrenar clasificadores
             for ( int k = 0; k < _numPruebas; ++k )
             {
                 Debil prueba = new Debil();
@@ -59,13 +59,14 @@ public class AdaBoost
                 if ( prueba.getError() < mejordebil.getError() )
                     mejordebil = prueba;
             }
-            //System.out.println("ERROR: " + mejordebil.getError() );
-            // GUARDAMOS EN EL FUERTE EL MEJOR CLASIFICADOR DEBIL
+            
+            
+            // guardar en el fuerte el mejor clasificador debil
             fuerte.addDebil ( mejordebil );
             ArrayList<Boolean> clasificados = mejordebil.aplicarClasificadorDebil ( entrenamiento );
             
             
-            // ACTUALIZAR PESOS IMÁGENES
+            // actualizar los pesos de las imágenes
             float Z = 0.0f;
             float peso;
             float confianzaDebil = mejordebil.getConfianza();
@@ -82,7 +83,7 @@ public class AdaBoost
             }
             
             
-            // NORMALIZAR LOS PESOS
+            // normalizar los pesos
             for ( int j = 0; j < entrenamiento.size(); ++j )
             {
                 peso = entrenamiento.get(j).getPeso() / Z;

@@ -11,12 +11,12 @@ import java.util.ArrayList;
 public final class Practica 
 {
     // porcentaje y numero de imágenes a entrenar
-    private int _porcentajeEntrenamiento;
+    private final int _porcentajeEntrenamiento;
     private final int _totalImagenes = 1000;
     private final int _cantidadEntrenamiento;
-
+    
     // ArrayList con las imágenes separas en testeo y entrenamiento
-    private final ArrayList _cantidad = new ArrayList();
+    private final ArrayList _cantidad;
     private final ArrayList _aprendizaje = new ArrayList ();
     private final ArrayList _testeo = new ArrayList ();
     
@@ -40,27 +40,15 @@ public final class Practica
     */
     public Practica( int porcentajeEntrenamiento )
     {
+        this._cantidad = new ArrayList();
         
         _porcentajeEntrenamiento = porcentajeEntrenamiento;
         _cantidadEntrenamiento = _totalImagenes * _porcentajeEntrenamiento / 100;
-        
         _ml.loadDBFromPath ( "./mnist_1000" );
-        
-        
-        System.out.println ("[Practica] Imágenes a cargar:     " + _totalImagenes );
-        System.out.println ("[Practica] Porcentaje a entrenar: " + _porcentajeEntrenamiento );
-        System.out.println ("[Practica] Imagenes a entrenar:   " + _cantidadEntrenamiento);
-        System.out.println("-------");
         
         cantidadEntrenamiento();
         separarImagenes();
         correctoEntrenamiento();
-        
-        System.out.println("--------");
-        System.out.println ("[Practica] Size aprendizaje: " + _aprendizaje.size() );
-        System.out.println ("[Practica] Size testeo:      " + _testeo.size() );     
-        System.out.println ("[Practica] Size correcto:    " + _correctosEntrenamiento.size() );
- 
     }
     
     /**
@@ -69,7 +57,6 @@ public final class Practica
     */
     private void cantidadEntrenamiento ()
     {
-        System.out.println("[Practica] Obtenida cantidad imágenes por dígito...");
         for ( int i = 0; i < 10; ++i )
         {
             ArrayList imgs = _ml.getImageDatabaseForDigit(i);
@@ -94,8 +81,6 @@ public final class Practica
         for ( int i = 0; i < 10; ++i )
         {
             ArrayList resultado = new ArrayList();
-            System.out.print("inicio: " + inicio);
-            System.out.println(" fin: " + fin);
             for ( int j = 0; j < _aprendizaje.size() ; ++j )
             {
                 rango = (j>=inicio) && (j<fin);
@@ -112,8 +97,6 @@ public final class Practica
                 fin = _aprendizaje.size();
             _correctosEntrenamiento.add ( resultado );
         }
-        
-        
     }
     
     /**
@@ -123,7 +106,6 @@ public final class Practica
     */
     private void separarImagenes()
     {
-        System.out.println("[Practica] Imagenes separadas en testeo y entrenamiento...");
         int separarImagenes;
         int digitos;
         int tipo = 0;
@@ -189,8 +171,9 @@ public final class Practica
         ArrayList mejoresH = new ArrayList( _testeo.size() );
         float mejor;
         int pos = 0;
-        for ( Object img : _testeo )
+        for ( int i = 0; i < _testeo.size(); ++i )
         {
+            Object img = _testeo.get(i);
             mejor = 0;
             for ( int j = 0; j < fuertes.size(); ++j )
             {
@@ -200,9 +183,7 @@ public final class Practica
                     mejor = f.H( (Imagen)img);
                     pos = j;
                 }
-                //System.out.println("H del (" +j+")  " + f.H((Imagen)img));
             }
-            //System.out.println("-------------------------");
             mejoresH.add(pos);
         }
         
@@ -223,30 +204,9 @@ public final class Practica
         return aciertos;
     }
     
-    /**
-     * getters y setters
-     * @return 
-     */
+    
     public ArrayList getCorrectoTesteo() {
         return _correctoTesteo;
-    }
-    public int getPorcentajeEntrenamiento() {
-        return _porcentajeEntrenamiento;
-    }
-    public int getTotalImagenes() {
-        return _totalImagenes;
-    }
-    public int getCantidadEntrenamiento() {
-        return _cantidadEntrenamiento;
-    }
-    public ArrayList getCantidad() {
-        return _cantidad;
-    }
-    public MNISTLoader getMl() {
-        return _ml;
-    }
-    public void setPorcentajeEntrenamiento(int porcentajeEntrenamiento) {
-        this._porcentajeEntrenamiento = porcentajeEntrenamiento;
     }
     public ArrayList getAprendizaje() {
         return _aprendizaje;

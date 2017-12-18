@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package pkg1718_p2si;
 
 import java.util.ArrayList;
@@ -16,16 +12,17 @@ public class Main
     public static void main ( String[] args ) 
     {
         // Porcentaje de imagenes destinadas al entrenamiento
-        int porcentajeEntrenamiento = 62;
+        int porcentajeEntrenamiento = 72;
         Practica p = new Practica( porcentajeEntrenamiento );
         System.out.println("");
         
         // numero de pruebas a realizar y la cantidad
         // de clasificadores débiles a entrenar en el algoritmo adaboost
-        int numeroPruebas = 800;
+        int numeroPruebas = 1000;
         int numeroDebiles = 100;
-        System.out.println("[Main] Numero de pruebas: " + numeroPruebas );
-        System.out.println("[Main] Numero de debiles: " + numeroDebiles + "\n");
+        System.out.println("Numero de pruebas: " + numeroPruebas );
+        System.out.println("Numero de debiles: " + numeroDebiles );
+        System.out.println("Porcentaje entrenamiento: " + porcentajeEntrenamiento  + "\n" );
         
         AdaBoost adaboost = new AdaBoost( numeroDebiles, numeroPruebas );
 
@@ -42,15 +39,12 @@ public class Main
         // aplicar clasificadores fuertes a las imágenes de testeo
         ArrayList mejoresH = p.aplicarFuertes ( fuertes );
 
-        System.out.println( "\n[Main] Comparacion real con la generada" );
-        System.out.println( mejoresH);
-        System.out.println( p.getCorrectoTesteo() );
- 
-
         // obtener el número de aciertos
         int numAciertos = p.imagenesAcertadas ( mejoresH );
         
-        System.out.println( "ACIERTOS: " + numAciertos );
+        System.out.println( "\nACIERTOS: " + numAciertos );
         System.out.println( "FALLOS: " + (p.getTesteo().size() - numAciertos) );
+        System.out.println("PORCENTAJE: " + (numAciertos*100/mejoresH.size()) );
+
     }
 }
