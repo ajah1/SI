@@ -16,14 +16,14 @@ public class Main
     public static void main ( String[] args ) 
     {
         // Porcentaje de imagenes destinadas al entrenamiento
-        int porcentajeEntrenamiento = 72;
+        int porcentajeEntrenamiento = 62;
         Practica p = new Practica( porcentajeEntrenamiento );
         System.out.println("");
         
         // numero de pruebas a realizar y la cantidad
         // de clasificadores débiles a entrenar en el algoritmo adaboost
-        int numeroPruebas = 1000;
-        int numeroDebiles = 150;
+        int numeroPruebas = 800;
+        int numeroDebiles = 100;
         System.out.println("[Main] Numero de pruebas: " + numeroPruebas );
         System.out.println("[Main] Numero de debiles: " + numeroDebiles + "\n");
         

@@ -56,10 +56,10 @@ public class AdaBoost
                 Debil prueba = new Debil();
                 prueba.ErrorClasificador ( entrenamiento, real );
                 
-                if ( mejordebil.getError() > prueba.getError() )
+                if ( prueba.getError() < mejordebil.getError() )
                     mejordebil = prueba;
             }
-
+            //System.out.println("ERROR: " + mejordebil.getError() );
             // GUARDAMOS EN EL FUERTE EL MEJOR CLASIFICADOR DEBIL
             fuerte.addDebil ( mejordebil );
             ArrayList<Boolean> clasificados = mejordebil.aplicarClasificadorDebil ( entrenamiento );

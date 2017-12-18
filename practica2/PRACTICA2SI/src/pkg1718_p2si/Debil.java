@@ -24,7 +24,7 @@ public class Debil {
     public Debil ()
     {
         _pixel = (int)(Math.random() * 784);
-        _umbral = (int)(Math.random() * 255) - 128;
+        _umbral = (int)(Math.random() * 256)-128;
         _direccion = 1;
         
         int direc = (int)(Math.random() * 2);
@@ -39,14 +39,12 @@ public class Debil {
         
         if ( _direccion == 1 )
         {
-            if ( _umbral >= imagen.getImageData()[_pixel] )
-                resultado = true;
-        }
-        else if ( _direccion == -1 )
-        {
             if ( _umbral < imagen.getImageData()[_pixel] )
                 resultado = true;
         }
+        else if ( _umbral >= imagen.getImageData()[_pixel] )
+                resultado = true;
+        
         return resultado;
     }
     
@@ -60,25 +58,16 @@ public class Debil {
     public ArrayList aplicarClasificadorDebil ( ArrayList entrenamiento )
     {
         ArrayList<Boolean> clasificacion = new ArrayList();
-        boolean aux = false;
         
+        boolean aux;
+        int umbralimagen;
         for ( int i = 0; i < entrenamiento.size(); i++ ) 
         {
             Imagen img = (Imagen)entrenamiento.get(i);
-            byte imageData[] = img.getImageData();
-            
-            int umbralimagen = imageData[_pixel];
-            
-            if ( _direccion == 1 )
-            {
-                if ( _umbral <  umbralimagen )
-                    aux = true;
-            }
-            else if ( _umbral >=  umbralimagen )
-                    aux = true;
+           
+            aux = h (img);
              
             clasificacion.add(aux);
-            aux = false;
         }
         return clasificacion;
     }
@@ -94,7 +83,7 @@ public class Debil {
     {
         ArrayList clasificacion =  this.aplicarClasificadorDebil ( aprendizaje );
         
-        for ( int i = 0; i < correcto.size(); ++i ) 
+        for ( int i = 0; i < clasificacion.size(); ++i ) 
         {
             if ( clasificacion.get(i).equals(correcto.get(i)) )  
                 _error += aprendizaje.get(i).getPeso();

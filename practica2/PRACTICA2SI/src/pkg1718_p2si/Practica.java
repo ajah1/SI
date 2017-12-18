@@ -20,6 +20,9 @@ public final class Practica
     private final ArrayList _aprendizaje = new ArrayList ();
     private final ArrayList _testeo = new ArrayList ();
     
+    // array auxiliar
+    private final ArrayList _tipo = new ArrayList();
+    
     // ArrayList bidimensional con la clasificación correcta de las imagenes
     // de entrenamiento para cada dígito.
     private final ArrayList<ArrayList> _correctosEntrenamiento = new ArrayList<>();
@@ -84,24 +87,29 @@ public final class Practica
      */  
     private void correctoEntrenamiento ()
     {
-        System.out.println("[Practica] Array clasificación real generada...");
-        int fin = (int) _cantidad.get(0) - 1;
+        boolean rango;
         
+        int inicio = 0;
+        int fin = (int)_tipo.get(0);
         for ( int i = 0; i < 10; ++i )
         {
             ArrayList resultado = new ArrayList();
-            
-            for ( int j = 0; j < _cantidadEntrenamiento ; ++j )
+            System.out.print("inicio: " + inicio);
+            System.out.println(" fin: " + fin);
+            for ( int j = 0; j < _aprendizaje.size() ; ++j )
             {
-                
-                boolean rango =  ( j>=fin ) && ( j < (fin + (int)_cantidad.get(i)) );
+                rango = (j>=inicio) && (j<fin);
                 if ( rango )
-                    resultado.add ( true );
-                
+                    resultado.add(true);
                 else
-                    resultado.add ( false );
+                    resultado.add(false);
             }
             
+            inicio = fin;
+            if ( i != 9 )
+                fin += (int)_tipo.get(i+1);
+            else
+                fin = _aprendizaje.size();
             _correctosEntrenamiento.add ( resultado );
         }
         
@@ -118,6 +126,7 @@ public final class Practica
         System.out.println("[Practica] Imagenes separadas en testeo y entrenamiento...");
         int separarImagenes;
         int digitos;
+        int tipo = 0;
    
         float sumaError = 0;
         float sde;
@@ -130,19 +139,26 @@ public final class Practica
             sde = (float)digitos * _porcentajeEntrenamiento / 100.0f;
             sumaError += sde - (int)sde;
 
+            tipo = 0;
             for ( int j = 0; j < digitos; ++j )
             {
                 Imagen img = (Imagen) imgs.get(j);
 
                 if ( j <  separarImagenes )
+                {
                     _aprendizaje.add ( img );
+                    tipo++;
+                }
                 
                 else
                 {
                     _testeo.add ( img );
                     _correctoTesteo.add(i);
                 }
+                
             }
+            _tipo.add(tipo);
+            
         }
         
         // corregir error al aplicar el porcentaje
@@ -184,7 +200,9 @@ public final class Practica
                     mejor = f.H( (Imagen)img);
                     pos = j;
                 }
+                //System.out.println("H del (" +j+")  " + f.H((Imagen)img));
             }
+            //System.out.println("-------------------------");
             mejoresH.add(pos);
         }
         
@@ -198,7 +216,7 @@ public final class Practica
         
         for ( int i = 0; i < _testeo.size(); ++i )
         {
-            if ( mejoresH.get(i) == _correctoTesteo.get(i))
+            if ( mejoresH.get(i) == _correctoTesteo.get(i) )
                aciertos++;
         }
         
