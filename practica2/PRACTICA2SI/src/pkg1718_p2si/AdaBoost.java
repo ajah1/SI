@@ -1,12 +1,7 @@
 
 package pkg1718_p2si;
 
-import java.io.BufferedWriter;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -15,7 +10,7 @@ import java.util.ArrayList;
  */
 public class AdaBoost 
 {
-    public static void main ( String[] args ) 
+    public static void main ( String[] args ) throws IOException 
     {
         
         String hola [] = new String[2];
@@ -58,48 +53,11 @@ public class AdaBoost
                 fuertes.add( adaboost.aplicarAlgoritmo( p.getAprendizaje(), p.getCorrectos().get(i)) );
             }
             
-            // guardar en un fichero el fuerte
+            p.guardarPipo(fuertes);
             
-            Path path = Paths.get("fuerte.txt");
-            try 
-                (BufferedWriter br = Files.newBufferedWriter(path,
-                  Charset.defaultCharset(), StandardOpenOption.CREATE)) 
-            {
-                br.write("[FUERTE]");
-                br.newLine();
-                
-                Debil auxd;
-                ArrayList<Debil> auxdebiles;
-                int numdebiles;
-                int size = fuertes.size();
-                for ( int i = 0; i < size; ++i )
-                {
-                    auxdebiles = fuertes.get(i).getDebiles();
-                    numdebiles = auxdebiles.size();
-                    for ( int j = 0; j < 2; ++j )
-                    {
-                        auxd = auxdebiles.get(i);
-                        br.write( auxd.getUmbral() );
-                        br.newLine();
-                        br.write( Float.toString( auxd.getError() ) );
-                        br.newLine();
-                        br.write( auxd.getPixel() );
-                        br.newLine();
-                        br.write( auxd.getDireccion() );
-                        br.newLine();
-                        br.write( Float.toString( auxd.getConfianza()) );
-                        br.newLine();
-                    }
-                    br.write("[FUERTE]");
-                    br.newLine();
-                }   
-                
-            } 
-            catch (Exception e)
-            {
-                System.out.println("ERROR AL ESCRIBIR EL FICHERO");
-                System.out.println(e.toString());
-            }            
+            ArrayList<Fuerte> best;
+            best = p.leerPipo();
+            
         }
         
         // aplicar clasificadores fuertes a las imágenes de testeo

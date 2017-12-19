@@ -1,6 +1,13 @@
 
 package pkg1718_p2si;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
@@ -204,7 +211,90 @@ public final class Practica
         return aciertos;
     }
     
+    // guardar lla información de los fuertes
+    public void guardarPipo ( ArrayList<Fuerte> fuertes ) throws IOException
+    {
+        // guardar en un fichero el fuerte
+        PrintWriter pw;
+        FileWriter fichero = null;
+        try 
+        {
+            fichero = new FileWriter("fuerte.out");
+            pw = new PrintWriter(fichero);
+
+            Debil auxd;
+            ArrayList<Debil> auxdebiles;
+            int numdebiles;
+            int size = fuertes.size();
+            for ( int i = 0; i < size; ++i )
+            {
+                pw.println("[FUERTE]");
+                auxdebiles = fuertes.get(i).getDebiles();
+                numdebiles = auxdebiles.size();
+                for ( int j = 0; j < numdebiles; ++j )
+                {
+                    auxd = auxdebiles.get(i);
+
+                    pw.println(auxd.getUmbral());      
+                    pw.println(auxd.getError());
+                    pw.println(auxd.getPixel());
+                    pw.println(auxd.getDireccion());
+                    pw.println(auxd.getConfianza());
+                }
+            }
+            pw.println("[FIN]");
+        } 
+        catch (IOException e)
+        {
+            System.out.println("ERROR AL ESCRIBIR EL FICHERO");
+            System.out.println(e.toString());
+        }    
+        finally 
+        {
+            if ( null != fichero)
+                fichero.close();
+        }
+    }
     
+    public ArrayList<Fuerte> leerPipo () throws IOException
+    {
+        ArrayList<Fuerte> fuertes = new ArrayList(10);
+        
+        File archivo = null;
+        FileReader fr = null;
+        BufferedReader br = null;
+        
+        // leer mientras no se llegue a [FIN]
+        
+            // mientras no encuentra [FUERTE]
+                
+                // leer y añadir debil
+                
+                
+        try
+        {
+            archivo = new File ( "fuerte.out" );
+            fr = new FileReader (archivo);
+            br = new BufferedReader(fr);
+            
+            String linea = br.readLine();
+            while ( linea != null )
+            {
+                if ( linea.equals("[FUERTE]") )
+                    System.out.println(linea);
+                linea = br.readLine();
+            }
+        }
+        catch (FileNotFoundException e )
+        {
+            System.out.println("ERROR: al leer fuerte");
+            System.out.println(e.toString());
+        }
+        finally{ if (null!=fr) fr.close(); }
+        
+        
+        return fuertes;
+    }
     public ArrayList getCorrectoTesteo() {
         return _correctoTesteo;
     }

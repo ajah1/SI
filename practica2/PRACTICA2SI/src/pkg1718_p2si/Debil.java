@@ -106,5 +106,25 @@ public class Debil {
     public int getPixel() {
         return _pixel;
     }
+    
+        public void setUmbral(int _umbral) {
+        this._umbral = _umbral;
+    }
+
+    public void setError(float _error) {
+        this._error = _error;
+    }
+
+    public void setPixel(int _pixel) {
+        this._pixel = _pixel;
+    }
+
+    public void setDireccion(int _direccion) {
+        this._direccion = _direccion;
+    }
+
+    public void setConfianza(float _confianza) {
+        this._confianza = _confianza;
+    }
 
 }
