@@ -94,11 +94,17 @@ public class Debil {
     public float getError () {
         return _error;
     }
-    public float getDireccion () {
+    public int getDireccion () {
         return _direccion;
     }
     public float getConfianza() {
         return _confianza;
+    }
+    public int getUmbral() {
+        return _umbral;
+    }
+    public int getPixel() {
+        return _pixel;
     }
 
 }
