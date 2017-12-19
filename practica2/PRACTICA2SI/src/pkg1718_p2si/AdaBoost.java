@@ -4,93 +4,69 @@ package pkg1718_p2si;
 import java.util.ArrayList;
 
 /**
- *
- * @author Alejandro Jesús Aliaga Hyder 48765284V
+ * Crea un objeto "Practica" que contiene la información a operar, un objeto 
+ * "AdaBoost" que contiene el algoritmo.
  */
 public class AdaBoost 
 {
-    private int _numclasificadores = 0;
-    private int _numPruebas = 0;
-    /**
-     * Constructor parametrizado con el número de clasificadores a obtener por
-     * cada clasificador fuerte y el número de pruebas para obtener el debil
-     * @param numclasificadores
-     * @param numPruebas 
-     */
-    public AdaBoost ( int numclasificadores, int numPruebas )
+    public static void main ( String[] args ) 
     {
-        _numclasificadores = numclasificadores;
-        _numPruebas = numPruebas;
-    }
-    
-    /**
-     * Algortimo adaboost, devuelve el clasificador fuerte con la lista  de
-     * débiles obtenidoss
-     * @param entrenamiento
-     * @param real
-     * @return 
-     */
-     public Fuerte algoritmo ( ArrayList<Imagen> entrenamiento, ArrayList<Boolean> real ) 
-    {
-        Fuerte fuerte = new Fuerte();
         
-        float numerador;
+        String hola [] = new String[2];
+        hola[0] = args[0];
+        hola[1] = args[1];
         
-        // inicializar la distribución de pesos
-        float pesoInicial = 1.0f / entrenamiento.size();
-        entrenamiento.forEach((img) -> {
-            img.setPeso ( pesoInicial );
-        });
+        System.out.println(hola[0]);
+        System.out.println(hola[1]);
         
+        // Porcentaje de imagenes destinadas al entrenamiento
+        int porcentajeEntrenamiento = 72;
+        Practica p = new Practica( porcentajeEntrenamiento );
+        System.out.println("");
         
-        // clasificadores a entrenar
-        for ( int i = 0; i < _numclasificadores; ++i )
+        // numero de pruebas a realizar y la cantidad
+        // de clasificadores débiles a entrenar en el algoritmo adaboost
+        int numeroPruebas = 1000;
+        int numeroDebiles = 100;
+        System.out.println("Numero de pruebas: " + numeroPruebas );
+        System.out.println("Numero de debiles: " + numeroDebiles );
+        System.out.println("Porcentaje entrenamiento: " + porcentajeEntrenamiento  + "\n" );
+        
+        Algoritmo adaboost = new Algoritmo( numeroDebiles, numeroPruebas );
+        
+        ArrayList<Fuerte> fuertes = new ArrayList();
+        
+
+        int digito = 1;
+        int numAciertos = 0;
+        ArrayList mejoresH = null;
+        if ( hola[0].equals("-t") )
         {
-            
-            Debil mejordebil = new Debil();
-            mejordebil.ErrorClasificador ( entrenamiento, real );
-            
-            // entrenar clasificadores
-            for ( int k = 0; k < _numPruebas; ++k )
+            // llamada al algoritmo para cada dígito, este recibe la clasificación
+            // correcta de las imágenes correspondientes al dígito a calcular
+            digito = 9;
+            for ( int i = 0; i <= digito; ++i )
             {
-                Debil prueba = new Debil();
-                prueba.ErrorClasificador ( entrenamiento, real );
-                
-                if ( prueba.getError() < mejordebil.getError() )
-                    mejordebil = prueba;
+                System.out.println("--> fuerte del digito " + i);
+                fuertes.add( adaboost.aplicarAlgoritmo( p.getAprendizaje(), p.getCorrectos().get(i)) );
             }
-            
-            
-            // guardar en el fuerte el mejor clasificador debil
-            fuerte.addDebil ( mejordebil );
-            ArrayList<Boolean> clasificados = mejordebil.aplicarClasificadorDebil ( entrenamiento );
-            
-            
-            // actualizar los pesos de las imágenes
-            float Z = 0.0f;
-            float peso;
-            float confianzaDebil = mejordebil.getConfianza();
-            for ( int j = 0; j < entrenamiento.size(); ++j )
-            {
-                peso = entrenamiento.get(j).getPeso();
-                if ( clasificados.get(j).equals ( real.get(j) ) )
-                    numerador = peso * (float) Math.pow ( Math.E, -confianzaDebil );
-                else
-                    numerador = peso * (float) Math.pow ( Math.E, confianzaDebil );
-                
-                entrenamiento.get(j).setPeso( numerador );
-                Z += numerador;
-            }
-            
-            
-            // normalizar los pesos
-            for ( int j = 0; j < entrenamiento.size(); ++j )
-            {
-                peso = entrenamiento.get(j).getPeso() / Z;
-                entrenamiento.get(j).setPeso ( peso );
-            }
-            
         }
-        return fuerte;
+        else
+        {
+            // llamada al algoritmo para el dígito 1
+            int num = Integer.valueOf(hola[1]);
+            System.out.println("--> fuerte del digito " + num);
+            fuertes.add( adaboost.aplicarAlgoritmo( p.getAprendizaje(), p.getCorrectos().get(num)) );
+        }
+        
+        // aplicar clasificadores fuertes a las imágenes de testeo
+        mejoresH = p.aplicarFuertes ( fuertes );
+        // obtener el número de aciertos
+        numAciertos = p.imagenesAcertadas ( mejoresH );
+        
+        System.out.println( "\nACIERTOS: " + numAciertos );
+        System.out.println( "FALLOS: " + (p.getTesteo().size() - numAciertos) );
+        System.out.println("PORCENTAJE: " + (numAciertos*100/mejoresH.size()) );
+
     }
 }
