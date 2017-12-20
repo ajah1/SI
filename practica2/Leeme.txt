@@ -4,8 +4,7 @@
 
 > El fichero donde se escriben los datos pedidos en la
 > documentación usa el formato .txt
-> Será creado en el directorio raiz de la carpeta PRACTICA2SI, cuyo
-> nombre es "fuerte.txt"
+> Será creado en el directorio raiz de la carpeta PRACTICA2SI
 
 Parte obligatoria => REALIZADA
 Parte optativa 	  => NO REALIZADA

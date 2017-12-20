@@ -89,6 +89,8 @@ public class Algoritmo
                 peso = entrenamiento.get(j).getPeso() / Z;
                 entrenamiento.get(j).setPeso ( peso );
             }
+            
+            
         }
         return fuerte;
     }

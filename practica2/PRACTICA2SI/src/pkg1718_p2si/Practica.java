@@ -36,7 +36,7 @@ public final class Practica
     private final ArrayList _correctoTesteo = new ArrayList();
 
     // carga las imágenes a usar
-    private final MNISTLoader _ml = new MNISTLoader ();
+    public final MNISTLoader _ml = new MNISTLoader ();
     
     /**
     * constructor por defecto, llama a las siguientes funciones
@@ -173,14 +173,14 @@ public final class Practica
 
     
     // APLICAR LOS CLASIFICADORES FUERTES A LAS IMÁGENES DE TESTO
-    public ArrayList aplicarFuertes ( ArrayList<Fuerte> fuertes )
+    public ArrayList aplicarFuertes ( ArrayList<Imagen> imgs, ArrayList<Fuerte> fuertes )
     {
-        ArrayList mejoresH = new ArrayList( _testeo.size() );
+        ArrayList mejoresH = new ArrayList( imgs.size() );
         float mejor;
         int pos = 0;
-        for ( int i = 0; i < _testeo.size(); ++i )
+        for ( int i = 0; i < imgs.size(); ++i )
         {
-            Object img = _testeo.get(i);
+            Object img = imgs.get(i);
             mejor = 0;
             for ( int j = 0; j < fuertes.size(); ++j )
             {
@@ -198,13 +198,16 @@ public final class Practica
     }
     
     // DEVUELVE LA CANTIDAD DE ACIERTOS
-    public int imagenesAcertadas ( ArrayList mejoresH )
+    public int imagenesAcertadas ( 
+            ArrayList<Imagen> img, 
+            ArrayList mejoresH,
+            ArrayList correcto )
     {
         int aciertos = 0;
         
-        for ( int i = 0; i < _testeo.size(); ++i )
+        for ( int i = 0; i < img.size(); ++i )
         {
-            if ( mejoresH.get(i) == _correctoTesteo.get(i) )
+            if ( mejoresH.get(i) == correcto.get(i) )
                aciertos++;
         }
         
@@ -212,37 +215,41 @@ public final class Practica
     }
     
     // guardar lla información de los fuertes
-    public void guardarPipo ( ArrayList<Fuerte> fuertes ) throws IOException
+    public void guardarPipo ( ArrayList<Fuerte> fuertes, String fich ) throws IOException
     {
         // guardar en un fichero el fuerte
         PrintWriter pw;
         FileWriter fichero = null;
         try 
         {
-            fichero = new FileWriter("fuerte.out");
+            fichero = new FileWriter(fich+".out");
             pw = new PrintWriter(fichero);
 
             Debil auxd;
             ArrayList<Debil> auxdebiles;
             int numdebiles;
             int size = fuertes.size();
+            pw.println("---");
             for ( int i = 0; i < size; ++i )
             {
-                pw.println("[FUERTE]");
+                if ( i != 0)
+                    pw.println("9999");
+               
                 auxdebiles = fuertes.get(i).getDebiles();
                 numdebiles = auxdebiles.size();
                 for ( int j = 0; j < numdebiles; ++j )
                 {
-                    auxd = auxdebiles.get(i);
+                    auxd = auxdebiles.get(j);
 
                     pw.println(auxd.getUmbral());      
                     pw.println(auxd.getError());
                     pw.println(auxd.getPixel());
                     pw.println(auxd.getDireccion());
                     pw.println(auxd.getConfianza());
+                    if ( j < numdebiles-1 )
+                        pw.println("---");
                 }
             }
-            pw.println("[FIN]");
         } 
         catch (IOException e)
         {
@@ -256,32 +263,43 @@ public final class Practica
         }
     }
     
-    public ArrayList<Fuerte> leerPipo () throws IOException
+    public ArrayList<Fuerte> leerPipo (String fich) throws IOException
     {
         ArrayList<Fuerte> fuertes = new ArrayList(10);
-        
-        File archivo = null;
+        for ( int i = 0; i < 10; ++i )
+        {
+            Fuerte f = new Fuerte();
+            fuertes.add(f);
+        }
+        File archivo;
         FileReader fr = null;
-        BufferedReader br = null;
-        
-        // leer mientras no se llegue a [FIN]
-        
-            // mientras no encuentra [FUERTE]
-                
-                // leer y añadir debil
-                
+        BufferedReader br;
                 
         try
         {
-            archivo = new File ( "fuerte.out" );
+            archivo = new File ( fich+".out" );
             fr = new FileReader (archivo);
             br = new BufferedReader(fr);
             
+            int digito = 0;
             String linea = br.readLine();
-            while ( linea != null )
+            while ( linea != null || " ".equals(linea) )
             {
-                if ( linea.equals("[FUERTE]") )
-                    System.out.println(linea);
+                if ( "---".equals(linea) )
+                {
+                    Debil aux = new Debil();
+                    aux.setUmbral( Integer.valueOf(br.readLine()) );
+                    aux.setError( Float.valueOf(br.readLine()) );
+                    aux.setPixel( Integer.valueOf(br.readLine()) );
+                    aux.setDireccion( Integer.valueOf(br.readLine()) );
+                    aux.setConfianza( Float.valueOf(br.readLine()) );
+                    fuertes.get(digito).addDebil(aux);
+                    
+                }
+                if ( "9999".equals(linea) )
+                    digito++;
+                
+                //System.out.println(digito);
                 linea = br.readLine();
             }
         }
@@ -292,9 +310,25 @@ public final class Practica
         }
         finally{ if (null!=fr) fr.close(); }
         
-        
         return fuertes;
     }
+    
+    // llamada al algoritmo para cada dígito, este recibe la clasificación
+    // correcta de las imágenes correspondientes al dígito a calcular
+    public ArrayList<Fuerte> obtenerFuerte ( Practica p, Algoritmo adaboost )
+    {
+        ArrayList<Fuerte> fuerte = new ArrayList();
+        
+        int digito = 9;
+        for ( int i = 0; i <= digito; ++i )
+        {
+            System.out.println("--> fuerte del digito " + i);
+            fuerte.add( adaboost.aplicarAlgoritmo( p.getAprendizaje(), p.getCorrectosEnt().get(i)) );
+        }
+        
+        return fuerte;
+    }
+    
     public ArrayList getCorrectoTesteo() {
         return _correctoTesteo;
     }
@@ -304,7 +338,7 @@ public final class Practica
     public ArrayList getTesteo() {
         return _testeo;
     }
-    public ArrayList<ArrayList> getCorrectos() {
+    public ArrayList<ArrayList> getCorrectosEnt() {
         return _correctosEntrenamiento;
     }
 }
