@@ -323,7 +323,12 @@ public final class Practica
         for ( int i = 0; i <= digito; ++i )
         {
             System.out.println("--> fuerte del digito " + i);
-            fuerte.add( adaboost.aplicarAlgoritmo( p.getAprendizaje(), p.getCorrectosEnt().get(i)) );
+            fuerte.add ( adaboost.aplicarAlgoritmo ( 
+                        p.getAprendizaje(), 
+                        p.getCorrectosEnt().get(i),
+                        digito
+                        ) 
+            );
         }
         
         return fuerte;

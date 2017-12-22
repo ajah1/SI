@@ -30,7 +30,9 @@ public class Algoritmo
      * @param real
      * @return 
      */
-     public Fuerte aplicarAlgoritmo ( ArrayList<Imagen> entrenamiento, ArrayList<Boolean> real ) 
+     public Fuerte aplicarAlgoritmo ( ArrayList<Imagen> entrenamiento, 
+             ArrayList<Boolean> real,
+             int d) 
     {
         Fuerte fuerte = new Fuerte();
         
@@ -62,6 +64,7 @@ public class Algoritmo
             
             
             // guardar en el fuerte el mejor clasificador debil
+            // System.out.println("error: " + mejordebil.getError());
             fuerte.addDebil ( mejordebil );
             ArrayList<Boolean> clasificados = mejordebil.aplicarClasificadorDebil ( entrenamiento );
             
@@ -89,9 +92,44 @@ public class Algoritmo
                 peso = entrenamiento.get(j).getPeso() / Z;
                 entrenamiento.get(j).setPeso ( peso );
             }
-            
-            
         }
+        
+        int aciertos = 0;
+        boolean aux;
+        for ( int i = 0; i < entrenamiento.size(); ++i )
+        {
+            //System.out.println(fuerte.H(entrenamiento.get(i)));
+            if ( fuerte.H(entrenamiento.get(i)) >= 0 )
+                aciertos++;
+        }
+        
+        System.out.println("Aciertos: " + aciertos);
+            
+        
         return fuerte;
+    }
+     
+   public ArrayList aplicarFuertes ( ArrayList<Imagen> imgs, ArrayList<Fuerte> fuertes )
+    {
+        ArrayList mejoresH = new ArrayList( imgs.size() );
+        float mejor;
+        int pos = 0;
+        for ( int i = 0; i < imgs.size(); ++i )
+        {
+            Object img = imgs.get(i);
+            mejor = 0;
+            for ( int j = 0; j < fuertes.size(); ++j )
+            {
+                Fuerte f = fuertes.get(j);
+                if ( f.H( (Imagen)img) > mejor )
+                {
+                    mejor = f.H( (Imagen)img);
+                    pos = j;
+                }
+            }
+            mejoresH.add(pos);
+        }
+        
+        return mejoresH;
     }
 }

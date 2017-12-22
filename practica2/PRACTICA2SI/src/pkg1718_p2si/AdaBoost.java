@@ -12,11 +12,12 @@ public class AdaBoost
 {
     public static void main ( String[] args ) throws IOException 
     {
-        int porcentajeEntrenamiento = 72;
+        int porcentajeEntrenamiento = 92;
         Practica p = new Practica( porcentajeEntrenamiento );
         
-        int numeroPruebas = 1150;
-        int numeroDebiles = 108;
+        // 108
+        int numeroPruebas = 1008;
+        int numeroDebiles = 100;
         System.out.println("Numero de pruebas: " + numeroPruebas );
         System.out.println("Numero de debiles: " + numeroDebiles );
         System.out.println("Porcentaje entrenamiento: " + porcentajeEntrenamiento +"%");
@@ -38,9 +39,10 @@ public class AdaBoost
             imagenCargada = p._ml.getImageDatabaseForDigit(imagen);
             mejoresH = p.aplicarFuertes( imagenCargada, fuerte);
             
-            for ( int H : mejoresH )
-                if ( H == imagen)
-                    numAciertos++;
+            numAciertos = mejoresH.stream().filter((H) -> 
+                    ( H == imagen)).map((_item) -> 1).reduce(
+                            numAciertos, 
+                            Integer::sum);
             
             System.out.println("\nClasificación dada por el fuerte:");
             System.out.println(mejoresH);
@@ -53,6 +55,7 @@ public class AdaBoost
         else if ( args[0].equals("-t") )
         {
             System.out.println("\n[OPCION 1]: Entrenando para todos los dígitos");
+            
             fuerte = p.obtenerFuerte(p, adaboost);
             p.guardarPipo(fuerte,args[1]);
             
@@ -61,6 +64,9 @@ public class AdaBoost
                     p.getTesteo(),
                     mejoresH,
                     p.getCorrectoTesteo() );
+            
+            System.out.println(p.getCorrectoTesteo() );
+            System.out.println(mejoresH);
             
             System.out.println("\n** Resultados imagenes de testeo: ");
             System.out.println( "Aciertos:  " + numAciertos );
@@ -79,9 +85,10 @@ public class AdaBoost
             imagenCargada = p._ml.getImageDatabaseForDigit(imagen);
             mejoresH = p.aplicarFuertes( imagenCargada, fuerte);
             
-            for ( int H : mejoresH )
-                if ( H == imagen)
-                    numAciertos++;
+            numAciertos = mejoresH.stream().filter((H) -> 
+                    ( H == imagen)).map((_item) -> 1).reduce(
+                            numAciertos, 
+                            Integer::sum);
             
             System.out.println("Clasificacion dada por el fuerte: ");
             System.out.println(mejoresH);
