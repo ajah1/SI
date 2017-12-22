@@ -3,11 +3,15 @@
 > "_peso". Este contendrá el peso asociado a la imagen.
 
 > El fichero donde se escriben los datos pedidos en la
-> documentación usa el formato .txt
+> documentación usan el formato .txt
 > Será creado en el directorio raiz de la carpeta PRACTICA2SI
 
+> El fichero "nuestroMejorFuerte.txt" contiene el mejor clasificador
+> fuerte obtenido. Será usado en la ejecución por defecto
+
+
 Parte obligatoria => REALIZADA
-Parte optativa 	  => NO REALIZADA
+Parte "optativa"  => NO REALIZADA
 
 Alejandro jesús Aliaga Hyder
 48765284-V

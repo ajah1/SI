@@ -12,11 +12,11 @@ public class AdaBoost
 {
     public static void main ( String[] args ) throws IOException 
     {
-        int porcentajeEntrenamiento = 92;
+        int porcentajeEntrenamiento = 72;
         Practica p = new Practica( porcentajeEntrenamiento );
         
         // 108
-        int numeroPruebas = 1008;
+        int numeroPruebas = 1800;
         int numeroDebiles = 100;
         System.out.println("Numero de pruebas: " + numeroPruebas );
         System.out.println("Numero de debiles: " + numeroDebiles );
@@ -24,7 +24,6 @@ public class AdaBoost
         
         Algoritmo adaboost = new Algoritmo( numeroDebiles, numeroPruebas );
         
-        ArrayList<Imagen> imagenCorrecta;
         ArrayList<Imagen> imagenCargada;
         ArrayList<Fuerte> fuerte;
         ArrayList<Integer> mejoresH;
@@ -32,8 +31,9 @@ public class AdaBoost
         int numAciertos = 0;
         if (args.length == 0)
         {
-            int imagen = 3;
+            int imagen = 2;
             System.out.println("\n[POR DEFECTO]: Nuestro mejor fuerte sobre una imagen");
+            System.out.println("[POR DEFECTO]: Abriendo 'nuestroMejorFuerte.txt'");
             fuerte = p.leerPipo("nuestroMejorFuerte");
             
             imagenCargada = p._ml.getImageDatabaseForDigit(imagen);
@@ -44,8 +44,13 @@ public class AdaBoost
                             numAciertos, 
                             Integer::sum);
             
-            System.out.println("\nClasificación dada por el fuerte:");
+            ArrayList r = new ArrayList ();
+            for (int i = 0; i < imagenCargada.size(); ++i)
+                r.add(imagen);
+            
+            System.out.println("\ngenerada vs real:");
             System.out.println(mejoresH);
+            System.out.println(r);
             
             System.out.println("\n** Resultado fuerte sobre las imagenes del "+imagen);
             System.out.println( "Aciertos:  " + numAciertos );
@@ -54,7 +59,10 @@ public class AdaBoost
         }
         else if ( args[0].equals("-t") )
         {
-            System.out.println("\n[OPCION 1]: Entrenando para todos los dígitos");
+            System.out.println("\n[OPCION 1]: Entrenando para todos los dígitos\n");
+            
+            long time_start, time_end;
+            time_start = System.currentTimeMillis();
             
             fuerte = p.obtenerFuerte(p, adaboost);
             p.guardarPipo(fuerte,args[1]);
@@ -65,6 +73,9 @@ public class AdaBoost
                     mejoresH,
                     p.getCorrectoTesteo() );
             
+            System.out.println("\n**Fuerte guardado en "+args[1]);
+            
+            System.out.println("\nreal vs fuerte");
             System.out.println(p.getCorrectoTesteo() );
             System.out.println(mejoresH);
             
@@ -72,6 +83,10 @@ public class AdaBoost
             System.out.println( "Aciertos:  " + numAciertos );
             System.out.println( "Fallos:    " + (p.getTesteo().size() - numAciertos) );
             System.out.println("Porcentaje: " + (numAciertos*100/mejoresH.size()) +"%");
+            
+            time_end = System.currentTimeMillis();
+            System.out.println("\nLa tarea ha requerido "+ ( time_end - time_start ) +" milliseconds");
+            
         }
         else
         {
@@ -85,13 +100,18 @@ public class AdaBoost
             imagenCargada = p._ml.getImageDatabaseForDigit(imagen);
             mejoresH = p.aplicarFuertes( imagenCargada, fuerte);
             
+            ArrayList r = new ArrayList(imagenCargada.size());
+            for ( int i = 0; i < imagenCargada.size(); ++i)
+                r.add(imagen);
+            
             numAciertos = mejoresH.stream().filter((H) -> 
                     ( H == imagen)).map((_item) -> 1).reduce(
                             numAciertos, 
                             Integer::sum);
             
-            System.out.println("Clasificacion dada por el fuerte: ");
+            System.out.println("\n**generada vs real ");
             System.out.println(mejoresH);
+            System.out.println(r);
             
             System.out.println("\n** Resultados **");
             System.out.println( "Aciertos:  " + numAciertos );
