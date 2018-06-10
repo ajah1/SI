@@ -18,13 +18,61 @@ VAR_OUTPUT
     rot : REAL;
 END_VAR
 
-//EJEMPLO de definición NO VINCULANTE. Hacer lo mismo para los 7 sensores restantes
+// sensores **************************************************************
 FUZZIFY s0
     TERM near   := (0,1) (0.5,0.5) (1,0.25) (1.5,0);
     TERM med    := (0.25,0) (0.75,1) (1.25,0) (1.5,0);
     TERM far    := (0,0) (1.5,1);
 END_FUZZIFY
 
+FUZZIFY s1
+    TERM near   := (0,1) (0.5,0.5) (1,0.25) (1.5,0);
+    TERM med    := (0.25,0) (0.75,1) (1.25,0) (1.5,0);
+    TERM far    := (0,0) (1.5,1);
+END_FUZZIFY
+
+FUZZIFY s2
+    TERM near   := (0,1) (0.5,0.5) (1,0.25) (1.5,0);
+    TERM med    := (0.25,0) (0.75,1) (1.25,0) (1.5,0);
+    TERM far    := (0,0) (1.5,1);
+END_FUZZIFY
+
+FUZZIFY s3
+    TERM near   := (0,1) (0.5,0.5) (1,0.25) (1.5,0);
+    TERM med    := (0.25,0) (0.75,1) (1.25,0) (1.5,0);
+    TERM far    := (0,0) (1.5,1);
+END_FUZZIFY
+
+FUZZIFY s4
+    TERM near   := (0,1) (0.5,0.5) (1,0.25) (1.5,0);
+    TERM med    := (0.25,0) (0.75,1) (1.25,0) (1.5,0);
+    TERM far    := (0,0) (1.5,1);
+END_FUZZIFY
+
+FUZZIFY s5
+    TERM near   := (0,1) (0.5,0.5) (1,0.25) (1.5,0);
+    TERM med    := (0.25,0) (0.75,1) (1.25,0) (1.5,0);
+    TERM far    := (0,0) (1.5,1);
+END_FUZZIFY
+
+FUZZIFY s6
+    TERM near   := (0,1) (0.5,0.5) (1,0.25) (1.5,0);
+    TERM med    := (0.25,0) (0.75,1) (1.25,0) (1.5,0);
+    TERM far    := (0,0) (1.5,1);
+END_FUZZIFY
+
+FUZZIFY s7
+    TERM near   := (0,1) (0.5,0.5) (1,0.25) (1.5,0);
+    TERM med    := (0.25,0) (0.75,1) (1.25,0) (1.5,0);
+    TERM far    := (0,0) (1.5,1);
+END_FUZZIFY
+
+FUZZIFY s8
+    TERM near   := (0,1) (0.5,0.5) (1,0.25) (1.5,0);
+    TERM med    := (0.25,0) (0.75,1) (1.25,0) (1.5,0);
+    TERM far    := (0,0) (1.5,1);
+END_FUZZIFY
+// *********************************************************************
 
 //EJEMPLO de definición NO VINCULANTE
 DEFUZZIFY vel
