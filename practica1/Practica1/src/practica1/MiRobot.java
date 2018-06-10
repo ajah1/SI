@@ -205,7 +205,7 @@ public class MiRobot extends Agent{
             
             while ( aux != null )
             {
-                camino[aux.f][aux.c] = 'x';
+                camino[aux.f][aux.c] = 'X';
                 aux = aux.padre;
             }
             
