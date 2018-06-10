@@ -29,7 +29,7 @@ public class FuzzyController {
         }
 
         //Si se quieren mostrar los gráficos de conjuntos de las variables difusas
-        fis.chart();
+        //fis.chart();
     }
 
     //Calcula la intensidad de frenado para una velocidad y posicion dada

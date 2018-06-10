@@ -142,17 +142,24 @@ RULEBLOCK No1
     // velocidad
     RULE 1: IF s0 IS far THEN vel IS med;
     RULE 1: IF s0 IS med THEN vel IS med;
-    RULE 1: IF s0 IS near THEN vel IS slow;
+    RULE 1: IF s0 IS near THEN vel IS med;
         // RULE 1: IF s0 IS far THEN vel IS fast; ## no funciona ##
 
-    // rotación en función de asig
+    // rotaciones
     RULE 2: IF sig IS izqm THEN rot IS izqm;
     RULE 2: IF sig IS izq THEN rot IS izq;
     RULE 2: IF sig IS cen THEN rot IS cen;
     RULE 2: IF sig IS der THEN rot IS der;
     RULE 2: IF sig IS derm THEN rot IS derm;
-    
 
+    // guiar al robot, con s8 y s1
+    RULE 3: IF s1 IS near THEN rot IS derm;
+    RULE 3: IF s8 IS far and s1 IS far THEN rot IS cen;
+    RULE 3: IF s2 IS near THEN rot IS der;
+    RULE 3: IF s0 is far and s1 is far and s8 is near and s5 is med THEN rot derm;
+        //RULE 3: IF s0 is far and s1 is far and s8 is near and s5 is near THEN rot derm; ## no funcina
+        //RULE 3: IF s0 IS near and s1 IS med and s8 IS med and  s5 is far THEN rot IS derm; ## no funcina
+        //RULE 3: IF s8 IS near THEN rot IS izqm; ## no funciona
 END_RULEBLOCK
 // *********************************************************************
 
