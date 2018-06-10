@@ -177,6 +177,7 @@ public class MiRobot extends Agent{
         
         public void expand()
         {
+            System.out.println("***************************************************************************NODOS EXPANDIDOS");
             for (int i = 0; i < 20; ++i )
             {
                 for (int j = 0; j < 20; ++j)
@@ -209,7 +210,7 @@ public class MiRobot extends Agent{
                 aux = aux.padre;
             }
             
-            
+            System.out.println("*****************************************************CAMINO ENCONTRADO");
             for (int i = 0; i < 20; ++i )
             {
                 for (int j = 0; j < 20; ++j)

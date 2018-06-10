@@ -145,11 +145,12 @@ public class Practica1 {
                 Simbad frame = new Simbad(entorno, false);
 
                 //Muestra por pantalla el mundo que lee desde fichero
-                /*for (int i=0; i<tamaño_mundo; i++){
+                System.out.println("*****************************************************MUNDO A UTILIZAR");
+                for (int i=0; i<tamaño_mundo; i++){
                     for(int j=0;j<tamaño_mundo; j++)
                         System.out.print(mundo[i][j]+" ");
                     System.out.println();
-                }*/
+                }
             }else{
                 System.out.println("ERROR EN EL FICHERO");
             }
