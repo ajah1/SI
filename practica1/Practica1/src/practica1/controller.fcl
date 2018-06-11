@@ -99,11 +99,11 @@ END_DEFUZZIFY
 //rotar ****************************************************************
 //EJEMPLO de definición NO VINCULANTE
 DEFUZZIFY rot
-    TERM izqm   :=    (-10,0) (0,0) (10,1);
-    TERM izq    :=    (-10,0)(-5,0) (0,1) (5,1) (10,0);
+    TERM izqm   :=    (-8,0) (0,0) (10,1);
+    TERM izq    :=    (1,0)(4.5,1) (6,1) (8,0);
     TERM cen    :=    (-10,0) (-5,0) (-2.5,1) (2.5,1) (5,0);
-    TERM der    :=    (-10,0) (-5,1) (0,1) (5,0) (10,0);
-    TERM derm   :=    (-10,1) (0,0) (10,0);
+    TERM der    :=    (-8,0) (-6,1) (-4.5,1) (-1,0);
+    TERM derm   :=    (-8,1) (0,0) (10,0);
 
     // Use 'Center Of Gravity' defuzzification method
     METHOD : COG;
@@ -118,11 +118,11 @@ END_DEFUZZIFY
 //sig ******************************************************************
 FUZZIFY sig
 //                (gradosGiro, pertenencia)
-    TERM izqm   := (135,0) (180,1);
-    TERM izq    := (23,0) (45,1) (90,1) (135,1) (150,0);
+    TERM izqm   := (0,0) (180,1);
+    TERM izq    := (-15,0) (45,1) (90,1) (135,1) (135,0); //(0,0) ## gira poco
     TERM cen    := (-1,0) (0,1) (1,0);
-    TERM der    := (-150,0) (-135,1) (-90,1) (-45,1) (-23,0);
-    TERM derm   := (-180,1) (-135,0);
+    TERM der    := (-135,0) (-135,1) (-90,1) (-45,1) (15,0); // (0,0) ## gira poco
+    TERM derm   := (-180,1) (0,0);
 END_FUZZIFY
 // *********************************************************************
 
@@ -140,10 +140,10 @@ RULEBLOCK No1
     ACCU : MAX;
 
     // velocidad
-    RULE 1: IF s0 IS far THEN vel IS med;
+    RULE 1: IF s0 IS far THEN vel IS fast;
     RULE 1: IF s0 IS med THEN vel IS med;
-    RULE 1: IF s0 IS near THEN vel IS med;
-        // RULE 1: IF s0 IS far THEN vel IS fast; ## no funciona ##
+    RULE 1: IF s0 IS near THEN vel IS slow;
+        // RULE 1: IF s0 IS far THEN vel IS med; ## no funciona ##
 
     // rotaciones
     RULE 2: IF sig IS izqm THEN rot IS izqm;
@@ -153,13 +153,14 @@ RULEBLOCK No1
     RULE 2: IF sig IS derm THEN rot IS derm;
 
     // guiar al robot, con s8 y s1
-    RULE 3: IF s1 IS near THEN rot IS derm;
+    RULE 3: IF s1 IS near THEN rot IS der;
     RULE 3: IF s8 IS far and s1 IS far THEN rot IS cen;
-    RULE 3: IF s2 IS near THEN rot IS der;
-    RULE 3: IF s0 is far and s1 is far and s8 is near and s5 is med THEN rot derm;
-        //RULE 3: IF s0 is far and s1 is far and s8 is near and s5 is near THEN rot derm; ## no funcina
-        //RULE 3: IF s0 IS near and s1 IS med and s8 IS med and  s5 is far THEN rot IS derm; ## no funcina
-        //RULE 3: IF s8 IS near THEN rot IS izqm; ## no funciona
+        // RULE 3: IF s8 IS far and s1 IS far and s0 IS far THEN rot IS cen; ## no funciona
+    RULE 3: IF s2 IS near THEN rot IS derm;
+    RULE 3: IF s0 is far and s1 is far and s8 is near and s5 is near THEN rot is derm;
+        // RULE 3: IF s0 is far and s1 is far and s8 is near and s5 is near THEN rot is derm;## no funciona
+        // RULE 3: IF s0 IS near and s1 IS med and s8 IS med and  s5 is far THEN rot IS derm; ## no funcina
+        // RULE 3: IF s8 IS near THEN rot IS izqm; ## no funciona
 END_RULEBLOCK
 // *********************************************************************
 
